@@ -2,6 +2,7 @@ from pico2d import *
 import game_world
 import game_framework
 import random
+from enemyBullets import Fireball
 
 
 # fill expressions correctly
@@ -32,6 +33,7 @@ class Batafire:
         self.wait = 10
         self.backMove = False
         self.UpMove = False
+        self.count = 0
         self.falling = 5
         #실행초에 어딘가 이미지를 로드해놓고 교체하는 방식이라면
         if Batafire.IDLE == None:
@@ -96,7 +98,12 @@ class Batafire:
 
         elif self.state == 2:
             self.wait -= game_framework.frame_time
+            self.count += game_framework.frame_time
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
+            if self.count / 0.1 > 1:
+                game_world.add_object(Fireball((self.x-100,self.y-100),(self.x-200,self.y-100+random.randint(-100,100))), 5)
+                self.count = 0
+
             if self.wait < 0:
                 self.wait = 10
                 self.frame = 0
