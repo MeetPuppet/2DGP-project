@@ -246,6 +246,7 @@ class ReadyState:
                 pass
 
 
+
         if event == X_KEY_DOWN:
             if Kirby.boom > 0:
                 Kirby.Boom()
@@ -307,6 +308,11 @@ class ShotState:
             Kirby.Bullet1()
             pass
         pass
+
+        if event == X_KEY_DOWN:
+            if Kirby.boom > 0:
+                Kirby.Boom()
+                Kirby.boom -= 1
 
     @staticmethod
     def do(Kirby):
