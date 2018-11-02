@@ -4,7 +4,6 @@ import game_world
 import game_framework
 
 from enemyBullets import enemyBullet
-from enemyBullets import Fireball
 from enemyBullets import SirKibbleCutter
 
 # fill expressions correctly
@@ -21,7 +20,7 @@ FRAMES_PER_ACTION = 8
 
 class Scarfy:
     image =None
-    def __init__(self,moveNumber):
+    def __init__(self,moveNumber,point=(1074, 768//2)):
         self.pattern = moveNumber
         self.shotTime = 0.6
         self.radius = 25
@@ -31,14 +30,9 @@ class Scarfy:
         self.gravity = 100
         self.frame = 0
         self.liveTime = 0
-        if moveNumber%2 == 0:
-            self.x, self.y = 1074, 550+6
-            self.stratPoint = (1074, 550)
-            pass
-        else:
-            self.x, self.y = 1074, 250+6
-            self.stratPoint = (1074, 250)
-            pass
+        if moveNumber>=2:
+            self.x, self.y = point[0], point[1]+6
+            self.stratPoint = (point[0], point[1])
 
         if Scarfy.image == None:
             Scarfy.image = load_image("image/minion/scarfy.png")

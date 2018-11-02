@@ -2,6 +2,7 @@ from pico2d import *
 import game_world
 import game_framework
 
+from Effect import Beat
 # fill expressions correctly
 PIXEL_PER_METER = (10.0 / 0.3)
 RUN_SPEED_KMPH = 150.0
@@ -28,9 +29,7 @@ class kirbyBullet1:
         self.x += RUN_SPEED_PPS * game_framework.frame_time
         self.frame= (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
         if self.x > 1074:
-            game_world.remove_object2(self, 4)
-
-
+            self.removeBullet()
 
         pass
     def render(self):
@@ -41,6 +40,9 @@ class kirbyBullet1:
     def getX(self): return self.x
     def getKind(self): return self.size
     def getDamage(self): return self.damage
+    def removeBullet(self):
+        game_world.remove_object2(self, 4)
+        game_world.add_object(Beat((self.x, self.y)), 7)
     pass
 
 class kirbyBullet2:
@@ -57,7 +59,7 @@ class kirbyBullet2:
         self.x += (RUN_SPEED_PPS+(RUN_SPEED_PPS/3))*game_framework.frame_time
         self.frame= (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
         if self.x > 1074:
-            game_world.remove_object2(self, 4)
+            self.removeBullet()
         pass
     def render(self):
         self.image.clip_draw(int(self.frame)*126,0,126,48,self.x,self.y)
@@ -67,6 +69,9 @@ class kirbyBullet2:
     def getX(self): return self.x
     def getKind(self): return self.size
     def getDamage(self): return self.damage
+    def removeBullet(self):
+        game_world.remove_object2(self, 4)
+        game_world.add_object(Beat((self.x, self.y)), 7)
     pass
 
 class maxBullet:
@@ -83,7 +88,7 @@ class maxBullet:
         self.x += (RUN_SPEED_PPS+(RUN_SPEED_PPS/2))*game_framework.frame_time
         self.frame= (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
         if self.x > 1074:
-            game_world.remove_object2(self, 4)
+            self.removeBullet()
 
 
 
@@ -96,6 +101,9 @@ class maxBullet:
     def getX(self): return self.x
     def getKind(self): return self.size
     def getDamage(self): return self.damage
+    def removeBullet(self):
+        game_world.remove_object2(self, 4)
+        game_world.add_object(Beat((self.x, self.y)), 7)
     pass
 
 class starBullet:
@@ -122,6 +130,9 @@ class starBullet:
     def getX(self): return self.x
     def getKind(self): return self.size
     def getDamage(self): return self.damage
+    def removeBullet(self):
+        game_world.remove_object2(self, 4)
+        game_world.add_object(Beat((self.x, self.y)), 7)
     pass
 
 class kirbyBoom:

@@ -136,7 +136,6 @@ class ScoreBoard():
             num = self.score
             for j in range(block[1]):
                 num = int(num/10)
-            print(block[1])
             block[0].update(int(num%10))
         pass
 

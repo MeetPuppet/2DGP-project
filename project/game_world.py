@@ -6,7 +6,7 @@
 # layer 4: playerBullet Objects
 # layer 5: Boom Objects
 # layer 6: enemyBullet Objects
-# layer 7: UI Objects
+# layer 7: effect Objects
 
 objects = [[],[],[],[],[],[],[],[]]
 
@@ -49,42 +49,8 @@ def remove_object2(o, num):
         objects[num].remove(o)
         del o
 
-def intersectAtoB(objectA, AList, objectB, BList):
+def intersectAtoB(AList, BList):
     distance = None
-    for A in range(len(objects[AList])):
-        for B in range(len(objects[BList])):
-            distance = getDistance(objectA.getPoint(), objectB.getPoint())
-            #object마다 object.getRadius()가 필요함
-            hitRange = objectA.getRadius() + objectB.getRadius()
-
-            if distance <= hitRange:
-                if AList == 1:
-                    # objects[AList].[BList]제거시발동함수
-                    #함수명 activate()로 통일시킬것
-                    #3아이템
-                    if BList == 3:
-                        if objectB.getItemNum() == 0:
-                            objectA.getItemNum()
-                            pass
-                        elif objectB.getItemNum() == 1:
-                            objectA.getItemNum()
-                            pass
-                        elif objectB.getItemNum() == 2:
-                            objectA.setBoom(1)
-                            pass
-                    #2,6 적, 적총알
-                    if BList == 2 or BList == 6:
-                        #현재 보스포함 5종 있음
-                        pass
-                    pass
-                    objects[BList].remove(objectB)
-                else:
-                    objects[AList].remove(objectA)
-                    # objects[AList].[BList]제거시발동함수
-                    objects[BList].remove(objectB)
-
-                '''
-                '''
     pass
 
 def clear():
