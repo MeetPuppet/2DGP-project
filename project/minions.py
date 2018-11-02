@@ -69,12 +69,12 @@ class Scarfy:
             if self.stratPoint[1] + 15 > self.y:
                 self.gravity = (RUN_SPEED_PPS/15)*game_framework.frame_time
                 self.jumpPower += self.gravity
-                self.y += self.jumpPower
+                self.y += self.jumpPower*20*game_framework.frame_time
                 pass
             elif self.stratPoint[1] - 15 < self.y:
                 self.gravity = (RUN_SPEED_PPS/15)*game_framework.frame_time
                 self.jumpPower -= self.gravity
-                self.y += self.jumpPower
+                self.y += self.jumpPower*20*game_framework.frame_time
                 pass
 
         if self.x > 1074 or self.x < -50:
@@ -108,13 +108,13 @@ class SirKibble:
         pass
     def update(self):
         if self.frame == 0 :
-            self.y = self.y+self.jumpPower
-            self.jumpPower-=(RUN_SPEED_PPS/15)*game_framework.frame_time
+            self.y = self.y+self.jumpPower*38*(game_framework.frame_time)
+            self.jumpPower-=(RUN_SPEED_PPS/25)*game_framework.frame_time
             if self.jumpPower < 0:
                 self.frame = 1
         elif self.frame == 3:
-            self.y = self.y+self.jumpPower
-            self.jumpPower-=(RUN_SPEED_PPS/15)*game_framework.frame_time
+            self.y = self.y+(self.jumpPower*38)*game_framework.frame_time
+            self.jumpPower-=(RUN_SPEED_PPS/25)*game_framework.frame_time
         else:
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)%3
             if int(self.frame) == 2:

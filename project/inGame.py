@@ -32,7 +32,7 @@ from enemyBullets import SirKibbleCutter
 #phase Range
 ONE, TWO, THREE, BOSS = range(4)
 
-#play time
+#playCheck
 playTime = 0.0
 
 #debug
@@ -70,6 +70,8 @@ EBullet = None
 fireball = None
 Cutter = None
 
+waves = []
+waveCount=0
 
 class UI:#maybe unused
 
@@ -86,7 +88,7 @@ class UI:#maybe unused
 
 def enter():
     global player, stage, bullet1, bullet2, bulletMax, star, boom, coins, powerUp, boomUp
-    global minion1, minion2, boss1, EBullet, fireball, Cutter
+    global minion1, minion2, boss1, EBullet, fireball, Cutter, waves
     player = Kirby()
     stage = Stage(0)
     bullet1 = kirbyBullet1()
@@ -109,6 +111,13 @@ def enter():
 
     game_world.add_object(stage, 0)
     game_world.add_object(player, 1)
+
+    waves += [Scarfy(2) for i in range(5)]
+    waves += [Scarfy(3)for i in range(5)]
+    waves += [(Scarfy(0), SirKibble()) for i in range(5)]
+    waves += [(Scarfy(0), SirKibble())for i in range(5)]
+    waves += [Batafire()]
+
     pass
 
 
@@ -164,8 +173,15 @@ def handle_events():
 
 
 def update():
-    global playTime
+    global playTime, waveCount
     playTime+=game_framework.frame_time
+    if int(playTime)%5 == 0:
+        #for wave in waves[waveCount]:
+        waveCount+=1
+
+        pass
+
+
     for game_object in game_world.all_objects():
         game_object.update()
 

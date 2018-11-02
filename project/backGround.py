@@ -24,13 +24,13 @@ class Stage:
     def update(self):
         moveRange =RUN_SPEED_PPS*game_framework.frame_time
 
-        if self.frame1X < -1004:
-            self.frame1X = self.frame2X + 1004
+        if self.frame1X < -(1004):
+            self.frame1X = self.frame2X + 1004 - moveRange
         else:
             self.frame1X -= moveRange
 
-        if self.frame2X < -1004:
-            self.frame2X = self.frame1X + 1004
+        if self.frame2X < -(1004):
+            self.frame2X = self.frame1X + 1004 - moveRange
         else:
             self.frame2X -= moveRange
 
