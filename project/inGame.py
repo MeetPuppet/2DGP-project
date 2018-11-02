@@ -28,8 +28,12 @@ from enemyBullets import enemyBullet
 from enemyBullets import Fireball
 from enemyBullets import SirKibbleCutter
 
+
 #phase Range
 ONE, TWO, THREE, BOSS = range(4)
+
+#play time
+playTime = 0.0
 
 #debug
 NUM_ONE, NUM_TWO, NUM_THREE, NUM_FOUR,NUM_FIVE = range(5)
@@ -137,6 +141,7 @@ def handle_events():
             game_world.add_object(Coin((1024//2, 768//2)), 3)
             game_world.add_object(PowerUp((1024//2, 768//2)), 3)
             game_world.add_object(BoomUp((1024//2, 768//2)), 3)
+
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_2:
             game_world.add_object(Scarfy(0), 2)
@@ -159,6 +164,8 @@ def handle_events():
 
 
 def update():
+    global playTime
+    playTime+=game_framework.frame_time
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -168,3 +175,4 @@ def draw():
     for game_object in game_world.all_objects():
         game_object.render()
     update_canvas()
+

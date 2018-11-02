@@ -6,8 +6,9 @@
 # layer 4: playerBullet Objects
 # layer 5: Boom Objects
 # layer 6: enemyBullet Objects
+# layer 7: UI Objects
 
-objects = [[],[],[],[],[],[],[]]
+objects = [[],[],[],[],[],[],[],[]]
 
 import math
 def getDistance(startPoint, endPoint):

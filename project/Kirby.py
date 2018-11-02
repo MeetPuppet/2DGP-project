@@ -6,6 +6,11 @@ from kirbyBullets import maxBullet
 from kirbyBullets import starBullet
 from kirbyBullets import kirbyBoom
 
+from UI import kirbyHPUI
+from UI import kirbyLifeUI
+from UI import kirbyBoomUI
+from UI import ScoreBoard
+
 import game_world
 import game_framework
 
@@ -366,10 +371,21 @@ class Kirby:
         self.chargeCount = 0
         self.countOn = False
         self.isEvent = True
+
         self.maxHP = 5
         self.HP = 5
+        self.HPUI = kirbyHPUI(self.HP)
+
+        self.life = 2
+        self.lifeUI = kirbyLifeUI(self.life)
+
         self.FRAMES_PER_ACTION = 8
+
         self.boom = 2
+        self.boomUI = kirbyBoomUI(self.boom)
+
+        self.scoreBoard = ScoreBoard()
+
         self.event_que = []
         self.cur_state = EventState
         self.cur_state.enter(self, None)
@@ -387,7 +403,13 @@ class Kirby:
             self.add_event(key_event)
 
     def update(self):
+        self.scoreBoard.update()
         self.cur_state.do(self)
+
+        self.HPUI.update(self.HP)
+        self.lifeUI.update(self.life)
+        self.boomUI.update(self.boom)
+
         if len(self.event_que) > 0:
             event = self.event_que.pop()
             self.cur_state.exit(self, event)
@@ -402,6 +424,10 @@ class Kirby:
 
     def render(self):
         self.cur_state.draw(self)
+        self.HPUI.render()
+        self.lifeUI.render()
+        self.boomUI.render()
+        self.scoreBoard.render()
         #pass
 
     def Bullet1(self):
