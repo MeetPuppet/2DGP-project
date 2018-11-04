@@ -37,7 +37,9 @@ class kirbyBullet1:
         pass
 
 
-    def getX(self): return self.x
+    def getRect(self):
+        return [(self.x-36,self.x+36,self.y-5,self.y+5),(self.x-36,self.x+36,self.y-5,self.y+5)]
+        pass
     def getKind(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
@@ -66,7 +68,10 @@ class kirbyBullet2:
         pass
 
 
-    def getX(self): return self.x
+    def getPoint(self): return(self.x-81,self.y-64)
+    def getRect(self):
+        return [(self.x-12,self.x+49,self.y-6,self.y+6),
+                (self.x+3,self.x+33,self.y-12,self.y+12)]
     def getKind(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
@@ -97,8 +102,10 @@ class maxBullet:
         self.image.clip_draw(int(self.frame)*232,0,232,150,self.x,self.y)
         pass
 
-
-    def getX(self): return self.x
+    def getPoint(self): return(self.x-160,self.y-75)
+    def getRect(self):
+        return [(self.x-19,self.x+101,self.y-(75-24),self.y+(75+24)),
+                (self.x+11,self.x+71,self.y-(75-49),self.y+(75+49))]
     def getKind(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
@@ -120,14 +127,16 @@ class starBullet:
         self.x += (RUN_SPEED_PPS+(RUN_SPEED_PPS/3))*game_framework.frame_time
         self.frame= (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         if self.x > 1074:
-            game_world.remove_object2(self, 4)
+            self.removeBullet()
         pass
     def render(self):
-        self.image.clip_draw(self.frame*30,0,30,30,self.x,self.y)
+        self.image.clip_draw(int(self.frame)*30,0,30,30,self.x,self.y)
         pass
 
-
-    def getX(self): return self.x
+    def getPoint(self): return(self.x,self.y)
+    def getRect(self):
+        return [(self.x - (15 - 0), self.x + (15 + 0), self.y - (14 - 7), self.y + (14 + 7)),
+                (self.x + (15 - 7), self.x + (15 + 7), self.y - (14 - 0), self.y + (14 + 0))]
     def getKind(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
@@ -141,6 +150,7 @@ class kirbyBoom:
         self.activated = False
         self.limit = 5.0
         self.frame = 0
+        self.radius = 23
         self.readyImage = load_image("image/kirby/BoomBullet.png")
         self.actImage = load_image("image/kirby/BoomShot.png")
         self.readyImage.opacify(0.7)
@@ -153,8 +163,10 @@ class kirbyBoom:
             self.activated = True
 
         if self.activated == False:
+            self.radius = 23
             self.x+=(RUN_SPEED_PPS/40)*game_framework.frame_time
         else:
+            self.radius = 200
             self.x+=(RUN_SPEED_PPS/60)*game_framework.frame_time
         if self.limit < 0:
             game_world.remove_object2(self, 5)
@@ -167,6 +179,8 @@ class kirbyBoom:
         pass
 
     def getPoint(self): return (self.x,self.y)
+    def getRadius(self): return self.radius
     def boomActivate(self): self.activated = True
     def getLimitTime(self): return self.limit
+
     pass

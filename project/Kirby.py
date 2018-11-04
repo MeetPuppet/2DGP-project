@@ -1,4 +1,5 @@
 from pico2d import *
+import random
 
 from kirbyBullets import kirbyBullet1
 from kirbyBullets import kirbyBullet2
@@ -64,7 +65,10 @@ class EventState:
     @staticmethod
     def exit(Kirby, event):
         if event == Z_KEY_DOWN:
-            Kirby.Bullet1()
+            if Kirby.grog == False:
+                Kirby.Bullet1()
+            else:
+                Kirby.StarBullet()
         pass
 
     @staticmethod
@@ -107,7 +111,10 @@ class IdleState:
     @staticmethod
     def exit(Kirby, event):
         if event == Z_KEY_DOWN:
-            Kirby.Bullet1()
+            if Kirby.grog == False:
+                Kirby.Bullet1()
+            else:
+                Kirby.StarBullet()
             Kirby.countOn = True
         elif event == Z_KEY_UP:
             Kirby.chargeCount = 0
@@ -168,7 +175,10 @@ class MoveState:
     @staticmethod
     def exit(Kirby, event):
         if event == Z_KEY_DOWN:
-            Kirby.Bullet1()
+            if Kirby.grog == False:
+                Kirby.Bullet1()
+            else:
+                Kirby.StarBullet()
             Kirby.countOn = True
         elif event == Z_KEY_UP:
             Kirby.chargeCount = 0
@@ -309,8 +319,10 @@ class ShotState:
     @staticmethod
     def exit(Kirby, event):
         if event == Z_KEY_DOWN:
-            #kirbyBullet
-            Kirby.Bullet1()
+            if Kirby.grog == False:
+                Kirby.Bullet1()
+            else:
+                Kirby.StarBullet()
             pass
         pass
 
@@ -369,8 +381,10 @@ class Kirby:
         self.dirX, self.dirY = 0, 0
         self.frameX, self.frameY = 0, 0
         self.chargeCount = 0
+        self.guard = 0
         self.countOn = False
         self.isEvent = True
+        self.grog = False
 
         self.maxHP = 5
         self.HP = 5
@@ -383,6 +397,7 @@ class Kirby:
 
         self.boom = 2
         self.boomUI = kirbyBoomUI(self.boom)
+
 
         self.scoreBoard = ScoreBoard()
 
@@ -403,6 +418,18 @@ class Kirby:
             self.add_event(key_event)
 
     def update(self):
+        if self.guard > 0:
+            self.guard -= game_framework.frame_time
+            alpha = random.randint(5,8)/10
+            self.IDLE.opacify(alpha)
+            self.CHARGE.opacify(alpha)
+            self.MAX.opacify(alpha)
+        else:
+            self.IDLE.opacify(1)
+            self.CHARGE.opacify(1)
+            self.MAX.opacify(1)
+
+
         self.scoreBoard.update()
         self.cur_state.do(self)
 
@@ -461,12 +488,21 @@ class Kirby:
     def getPoint(self): return (self.x,self.y)
     def getRadius(self): return self.radius
 
+    def getRect(self):
+        return [(self.x-46,self.x+46,self.y-20,self.y+20),
+                (self.x - 23, self.x + 23, self.y - 40, self.y + 40)]
+
+    def upScore(self): self.scoreBoard.upScore()
+
     def getHP(self): return self.HP
     def heal(self): self.HP += 1
-    def hit(self): self.HP -= 1
+    def hit(self):
+        if self.guard <= 0:
+            self.HP -= 1
+            self.guard =3
 
     def getBoom(self): return self.boom
-    def setBoom(self,count): self.boom += count
+    def setBoom(self,count=1): self.boom += count
 
     def getFrameY(self): return self.frameY
     def setFrameYZero(self): self.frameY=0
@@ -478,5 +514,7 @@ class Kirby:
     def isCharge(self, BOOL): self.countOn = BOOL
     def resetCount(self): self.chargeCount=0
 
+    def onGrog(self): self.grog = True
+    def offGrog(self): self.grog = False
 
     pass

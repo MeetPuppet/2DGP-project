@@ -25,6 +25,7 @@ class kirbyHPUI():
         pass
 
     def update(self,kirbyHP):
+        self.curHP = kirbyHP
         if self.curHP > self.maxHP:
             self.curHP = self.maxHP
         pass

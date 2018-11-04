@@ -43,7 +43,7 @@ class enemyBullet:
     def __init__(self, startPoint, wayPoint):
         self.start = startPoint
         self.x, self.y = startPoint[0], startPoint[1]
-        self.radius = 12
+        self.radius = 15
         self.dir = RUN_SPEED_PPS
         self.wayPoint = wayPoint
         self.angle = getAngle(startPoint, wayPoint)
@@ -56,19 +56,25 @@ class enemyBullet:
 
         self.y += -math.sin(self.angle) * self.dir * game_framework.frame_time
 
-        if self.x > getDistance(self.start,(self.x,self.y)):
+        if 1000 < getDistance(self.start,(self.x,self.y)):
             game_world.remove_object2(self,6)
         pass
     def render(self):
         self.image.draw(self.x, self.y)
         pass
 
+    def getPoint(self): return (self.x,self.y)
+    def getRect(self):
+        return [(self.x-12,self.x+12,self.y-(6),self.y+(6)),
+                (self.x+6,self.x+6,self.y-(12),self.y+(12))]
     def getRadius(self): return self.radius
     def bulletRemoverChecker(self):
         if getDistance(self.start,(self.x,self.y)) > 1000:
             return True
         return False
-    pass
+
+    def removeBullet(self):
+            game_world.remove_object2(self,6)
 
 class SirKibbleCutter:
     image =None
@@ -84,18 +90,25 @@ class SirKibbleCutter:
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         self.x -= self.dir * game_framework.frame_time
-        if self.x > -20:
+        if self.x < -20:
             game_world.remove_object2(self,6)
 
     def render(self):
         self.image.clip_draw(int(self.frame)*69,0,69,48,self.x,self.y)
         pass
 
+    def getPoint(self): return (self.x,self.y)
+    def getRect(self):
+        return [(self.x-34,self.x+34,self.y-(12),self.y+(12)),
+                (self.x+17,self.x+17,self.y-(24),self.y+(24))]
     def getRadius(self): return self.radius
     def bulletRemoverChecker(self):
         if getDistance(self.start,(self.x,self.y)) > 1000:
             return True
         return False
+
+    def removeBullet(self):
+            game_world.remove_object2(self,6)
     pass
 
 class Fireball:
@@ -118,16 +131,23 @@ class Fireball:
 
         self.y += -math.sin(self.angle) * self.dir * game_framework.frame_time
 
-        if self.x > getDistance(self.start,(self.x,self.y)):
+        if 1000 < getDistance(self.start,(self.x,self.y)):
             game_world.remove_object2(self,6)
         pass
     def render(self):
         self.image.clip_draw(int(self.frame)*72,0,72,72,self.x,self.y)
         pass
 
+    def getPoint(self): return (self.x,self.y)
+    def getRect(self):
+        return [(self.x-36,self.x+36,self.y-(18),self.y+(18)),
+                (self.x+18,self.x+18,self.y-(36),self.y+(36))]
     def getRadius(self): return self.radius
     def bulletRemoverChecker(self):
         if getDistance(self.start,(self.x,self.y)) > 1000:
             return True
         return False
+
+    def removeBullet(self):
+            game_world.remove_object2(self,6)
     pass

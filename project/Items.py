@@ -55,6 +55,9 @@ class Coin:
     pass
 
     def getPoint(self): return (self.x, self.y)
+    def getRect(self):
+        return [(self.x-32,self.x+32,self.y-(16),self.y+(16)),
+                (self.x-16,self.x+16,self.y-(32),self.y+(32))]
     def getItemNum(self): return self.itemNum
     def getLiveTime(self): return self.liveTime
 
@@ -100,6 +103,9 @@ class PowerUp:
     pass
 
     def getPoint(self): return (self.x, self.y)
+    def getRect(self):
+        return [(self.x-48,self.x+48,self.y-(24),self.y+(24)),
+                (self.x-24,self.x+24,self.y-(48),self.y+(48))]
     def getItemNum(self): return self.itemNum
     def getLiveTime(self): return self.liveTime
 
@@ -140,5 +146,8 @@ class BoomUp:
     pass
 
     def getPoint(self): return (self.x, self.y)
+    def getRect(self):
+        return [(self.x-25,self.x+25,self.y-(13),self.y+(13)),
+                (self.x-13,self.x+13,self.y-(25),self.y+(25))]
     def getItemNum(self): return self.itemNum
     def getLiveTime(self): return self.liveTime

@@ -28,10 +28,10 @@ class Batafire:
     def __init__(self):
         self.x, self.y = 1500,768//2
         self.maxHP, self.HP = 500, 500
-        self.radius = 150
+        self.radius = 90
         self.frame = 0
         self.state = 0
-        self.guarding = 0
+        self.guarding = 1
         self.wait = 10
         self.backMove = False
         self.UpMove = False
@@ -56,6 +56,8 @@ class Batafire:
         if self.gause == None:
             self.gause = bossGause(self.maxHP)
             game_world.add_object(self.gause, 7)
+        else:
+            self.gause.update(self.HP)
 
         if self.guarding > 0 : self.guarding -= 1
         if self.HP <= 0: self.state = 4
@@ -109,7 +111,7 @@ class Batafire:
             self.count += game_framework.frame_time
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
             if self.count / 0.1 > 1:
-                game_world.add_object(Fireball((self.x-100,self.y-100),(self.x-200,self.y-100+random.randint(-100,100))), 5)
+                game_world.add_object(Fireball((self.x-100,self.y-100),(self.x-200,self.y-100+random.randint(-100,100))), 6)
                 self.count = 0
 
             if self.wait < 0:
@@ -171,6 +173,15 @@ class Batafire:
 
     def getPoint(self): return (self.x, self.y)
     def getRadius(self): return self.radius
+
+    def getRect(self):
+        return [(self.x-100,self.x+100,self.y-75,self.y+75),
+                (self.x-75,self.x+75,self.y-150,self.y-50)]
+
     def getState(self): return self.state
     def getHP(self): return self.HP
+    def getHurt(self, damage):
+        if self.guarding <=0:
+            self.HP-= damage
+    def isBoss(self): return True
     def Kill(self): self.HP = 0

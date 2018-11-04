@@ -24,7 +24,7 @@ class Scarfy:
         self.pattern = moveNumber
         self.shotTime = 0.6
         self.radius = 25
-        self.isDead = 0
+        self.isDead = False
         self.isDown = 0
         self.jumpPower = 8
         self.gravity = 100
@@ -43,7 +43,7 @@ class Scarfy:
         if self.shotTime > 0 : self.shotTime-=game_framework.frame_time
         else:
             #shot  +random.randint(-10,10)/10
-            game_world.add_object(enemyBullet((self.x,self.y),(self.x-1,self.y)), 5)
+            game_world.add_object(enemyBullet((self.x,self.y),(self.x-1,self.y)), 6)
             self.shotTime = 0.5
             pass
 
@@ -71,7 +71,7 @@ class Scarfy:
                 self.y += self.jumpPower*20*game_framework.frame_time
                 pass
 
-        if self.x > 1074 or self.x < -50:
+        if self.x > 1074 or self.x < -50 or self.isDead == True:
             game_world.remove_object2(self, 2)
             pass
         pass
@@ -81,10 +81,16 @@ class Scarfy:
 
     def getRadius(self): return self.radius
     def getPoint(self): return (self.x, self.y)
+
+    def getRect(self):
+        return [(self.x-25,self.x+25,self.y-12,self.y+12),
+                (self.x - 12, self.x + 12, self.y - 25, self.y + 25)]
+
     def getState(self): return self.isDead
-    def Kill(self): self.isDead = 1
+    def getHurt(self,n): self.isDead = True
     def getSize(self): return 0
     def shotTiming(self): return self.shotTime
+    def isBoss(self): return False
 
     pass
 
@@ -93,8 +99,8 @@ class SirKibble:
     def __init__(self):
         self.x, self.y = random.randint(512,900), -100
         self.jumpPower = random.randint(20,28)
-        self.radius = 32
-        self.isDead = 0
+        self.radius = 35
+        self.isDead = False
         self.frame = 0
         if SirKibble.image == None:
             SirKibble.image = load_image("image/minion/SirKibble.png")
@@ -112,10 +118,10 @@ class SirKibble:
         else:
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)%3
             if int(self.frame) == 2:
-                game_world.add_object(SirKibbleCutter((self.x, self.y)), 5)
+                game_world.add_object(SirKibbleCutter((self.x, self.y)), 6)
                 self.frame = 3
 
-        if self.y < 0 and self.frame == 3:
+        if self.y < 0 and self.frame == 3 or self.isDead == True:
             game_world.remove_object2(self, 2)
         pass
     def render(self):
@@ -124,7 +130,13 @@ class SirKibble:
 
     def getRadius(self): return self.radius
     def getPoint(self): return (self.x, self.y)
+
+    def getRect(self):
+        return [(self.x-35,self.x+35,self.y-17,self.y+17),
+                (self.x - 17, self.x + 17, self.y - 35, self.y + 35)]
+
     def getState(self): return self.isDead
-    def Kill(self): self.isDead = 1
+    def getHurt(self,n): self.isDead = True
     def getFrame(self): return self.frame
+    def isBoss(self): return False
     pass
