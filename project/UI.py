@@ -146,3 +146,24 @@ class ScoreBoard():
 
     def upScore(self,plus=100): self.score += plus
     pass
+
+class bossGause:
+    def __init__(self,HP):
+        self.point = (1024-217,60)
+        self.maxHP = HP
+        self.HP = HP
+        self.maxHPimage = load_image("image/UI/gause.png")
+        self.curHPimage = load_image("image/UI/current.png")
+        pass
+
+    def update(self,HP=100):
+        self.HP = HP
+        pass
+
+    def render(self):
+        self.maxHPimage.draw(self.point[0],self.point[1])
+        self.curHPimage.clip_draw(0,0,395+(395-int(self.maxHP*(395/self.HP))),41,self.point[0]+((395-int(self.maxHP*(395/self.HP))))//2,self.point[1])
+        pass
+
+
+    pass

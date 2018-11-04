@@ -2,6 +2,8 @@ from pico2d import *
 import game_world
 import game_framework
 import random
+
+from UI import bossGause
 from enemyBullets import Fireball
 
 
@@ -35,6 +37,7 @@ class Batafire:
         self.UpMove = False
         self.count = 0
         self.falling = 5
+        self.gause = None
         #실행초에 어딘가 이미지를 로드해놓고 교체하는 방식이라면
         if Batafire.IDLE == None:
             Batafire.IDLE = load_image("image/boss/batafireIDLE.png")
@@ -49,6 +52,11 @@ class Batafire:
 
         pass
     def update(self):
+
+        if self.gause == None:
+            self.gause = bossGause(self.maxHP)
+            game_world.add_object(self.gause, 7)
+
         if self.guarding > 0 : self.guarding -= 1
         if self.HP <= 0: self.state = 4
 
