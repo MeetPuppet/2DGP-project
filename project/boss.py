@@ -27,7 +27,7 @@ class Batafire:
     DEAD = None
     def __init__(self):
         self.x, self.y = 1500,768//2
-        self.maxHP, self.HP = 500, 10
+        self.maxHP, self.HP = 500, 50
         self.radius = 90
         self.frame = 0
         self.state = 0
