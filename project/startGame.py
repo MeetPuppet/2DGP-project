@@ -9,6 +9,6 @@ def WINSIZEY(): return 768
 
 open_canvas(WINSIZEX(),WINSIZEY(),sync=True)
 
-game_framework.run(inGame)
+game_framework.run(logo)
 
 close_canvas()

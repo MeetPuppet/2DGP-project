@@ -462,6 +462,10 @@ class Kirby:
             self.CHARGE.opacify(1)
             self.MAX.opacify(1)
 
+        if self.HP == 5 and self.life == 2:
+            self.scoreBoard.upScore(2)
+        if self.grog == True:
+            self.scoreBoard.upScore(2)
 
         self.scoreBoard.update()
         self.cur_state.do(self)
@@ -471,9 +475,9 @@ class Kirby:
         self.boomUI.update(self.boom)
 
         if len(self.event_que) > 0:
+            event = self.event_que.pop()
+            self.cur_state.exit(self, event)
             if self.isEvent == False:
-                event = self.event_que.pop()
-                self.cur_state.exit(self, event)
                 self.cur_state = next_state_table[self.cur_state][event]
                 self.cur_state.enter(self, event)
 

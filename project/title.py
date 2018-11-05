@@ -17,7 +17,7 @@ alpha = 1
 
 def enter():
     global image1,image2,image3, front, anyKey
-    front = load_image('image/black_screen.jpg')
+    front = load_image('image/black_screen.png')
     image1 = load_image('image/title1.jpg')
     image2 = load_image('image/title2.jpg')
     image3 = load_image('image/title3.jpg')

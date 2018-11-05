@@ -12,7 +12,7 @@ alpha = 0.0
 
 def enter():
     global image, front
-    front = load_image('image/black_screen.jpg')
+    front = load_image('image/black_screen.png')
     image = load_image('image/kpu_credit.png')
     front.opacify(0)
 
