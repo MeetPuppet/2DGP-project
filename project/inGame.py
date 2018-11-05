@@ -141,7 +141,7 @@ def resume():
 
 
 def handle_events():
-    global waveCount
+    global waveCount, player
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -158,11 +158,7 @@ def handle_events():
 
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_2:
-            game_world.add_object(Scarfy(0), 2)
-            game_world.add_object(Scarfy(1), 2)
-            game_world.add_object(Scarfy(2), 2)
-            game_world.add_object(Scarfy(3), 2)
-            game_world.add_object(SirKibble(), 2)
+            #player.Hit()
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_3:
             game_world.add_object(Fireball((1024//2, 768//2),player.getPoint()), 5)

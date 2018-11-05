@@ -18,7 +18,8 @@ import game_framework
 def WINSIZEX(): return 1024
 def WINSIZEY(): return 768
 
-
+life = 2
+score = 0
 # move Speed
 PIXEL_PER_METER = (10.0 / 0.3)
 RUN_SPEED_KMPH = 50.0
@@ -33,7 +34,7 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 UP_KEY_DOWN, UP_KEY_UP, DOWN_KEY_DOWN, DOWN_KEY_UP, \
 LEFT_KEY_DOWN, LEFT_KEY_UP, RIGHT_KEY_DOWN, RIGHT_KEY_UP,\
 Z_KEY_DOWN, Z_KEY_UP, X_KEY_DOWN, \
-CHARGE, BE_IDLE, SHOT = range(14)
+CHARGE, BE_IDLE, SHOT, DEAD = range(15)
 
 
 key_event_table = {
@@ -60,25 +61,20 @@ class EventState:
     @staticmethod
     def enter(Kirby, event):
         Kirby.isEvent = True
+        Kirby.guard = 3
         pass
 
     @staticmethod
     def exit(Kirby, event):
-        if event == Z_KEY_DOWN:
-            if Kirby.grog == False:
-                Kirby.Bullet1()
-            else:
-                Kirby.StarBullet()
         pass
 
     @staticmethod
     def do(Kirby):
         Kirby.frameX = (Kirby.frameX + Kirby.FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
-        Kirby.x = Kirby.x + (RUN_SPEED_PPS/10) * game_framework.frame_time
-        if Kirby.x > 100:
+        Kirby.x += (RUN_SPEED_PPS/10) * game_framework.frame_time
+        if Kirby.x > 100 and Kirby.HP > 0 :
             Kirby.isEvent = False
             Kirby.add_event(BE_IDLE)
-        # fill here
 
     @staticmethod
     def draw(Kirby):
@@ -128,6 +124,8 @@ class IdleState:
 
     @staticmethod
     def do(Kirby):
+        if Kirby.HP <= 0 :
+            Kirby.add_event(DEAD)
         Kirby.FRAMES_PER_ACTION = 8
         if Kirby.countOn == True:
             Kirby.chargeCount += game_framework.frame_time
@@ -193,6 +191,8 @@ class MoveState:
 
     @staticmethod
     def do(Kirby):
+        if Kirby.HP <= 0 :
+            Kirby.add_event(DEAD)
         Kirby.FRAMES_PER_ACTION = 8
 
         if Kirby.countOn == True:
@@ -270,6 +270,8 @@ class ReadyState:
 
     @staticmethod
     def do(Kirby):
+        if Kirby.HP <= 0 :
+            Kirby.add_event(DEAD)
         Kirby.FRAMES_PER_ACTION = 6
         Kirby.frameX = (Kirby.frameX + Kirby.FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         Kirby.chargeCount += game_framework.frame_time
@@ -333,6 +335,8 @@ class ShotState:
 
     @staticmethod
     def do(Kirby):
+        if Kirby.HP <= 0 :
+            Kirby.add_event(DEAD)
         Kirby.FRAMES_PER_ACTION = 8
 
         Kirby.frameX = (Kirby.frameX + Kirby.FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
@@ -351,6 +355,31 @@ class ShotState:
     def draw(Kirby):
         Kirby.MAX.clip_draw(int(Kirby.frameX)*120,0,120,80,Kirby.x,Kirby.y)
 
+class DeadState:
+    global life
+
+    @staticmethod
+    def enter(Kirby, event):
+        Kirby.isEvent = True
+        Kirby.guard = 3
+        pass
+
+    @staticmethod
+    def exit(Kirby, event):
+        pass
+
+    @staticmethod
+    def do(Kirby):
+        global life
+        Kirby.y -= (RUN_SPEED_PPS) * game_framework.frame_time
+        if Kirby.y < -50 :
+            life-=1
+            Kirby.__init__()
+
+    @staticmethod
+    def draw(Kirby):
+        Kirby.IDLE.clip_draw(int(Kirby.frameX)*48,0,48,40,Kirby.x,Kirby.y)
+
 
 next_state_table = {
     EventState: {UP_KEY_DOWN: EventState, UP_KEY_UP: EventState, DOWN_KEY_DOWN: EventState, DOWN_KEY_UP: EventState,
@@ -359,22 +388,28 @@ next_state_table = {
 
     IdleState: {UP_KEY_DOWN: MoveState, UP_KEY_UP: IdleState, DOWN_KEY_DOWN: MoveState, DOWN_KEY_UP: IdleState,
                 LEFT_KEY_DOWN: MoveState, LEFT_KEY_UP: IdleState,RIGHT_KEY_DOWN: MoveState, RIGHT_KEY_UP: IdleState,
-                Z_KEY_DOWN: IdleState,Z_KEY_UP: IdleState,X_KEY_DOWN: IdleState, CHARGE: ReadyState},
+                Z_KEY_DOWN: IdleState,Z_KEY_UP: IdleState,X_KEY_DOWN: IdleState, CHARGE: ReadyState,DEAD: DeadState},
 
     MoveState: {UP_KEY_DOWN: IdleState, UP_KEY_UP: IdleState, DOWN_KEY_DOWN: IdleState, DOWN_KEY_UP: IdleState,
                 LEFT_KEY_DOWN: IdleState, LEFT_KEY_UP: IdleState, RIGHT_KEY_DOWN: IdleState, RIGHT_KEY_UP: IdleState,
-                Z_KEY_DOWN: MoveState, Z_KEY_UP: MoveState, X_KEY_DOWN: MoveState, CHARGE: ReadyState},
+                Z_KEY_DOWN: MoveState, Z_KEY_UP: MoveState, X_KEY_DOWN: MoveState, CHARGE: ReadyState,DEAD: DeadState},
 
     ReadyState: {UP_KEY_DOWN: ReadyState, UP_KEY_UP: ReadyState, DOWN_KEY_DOWN: ReadyState, DOWN_KEY_UP: ReadyState,
                 LEFT_KEY_DOWN: ReadyState, LEFT_KEY_UP: ReadyState,RIGHT_KEY_DOWN: ReadyState, RIGHT_KEY_UP: ReadyState,
-                Z_KEY_DOWN: ReadyState, Z_KEY_UP: ReadyState, X_KEY_DOWN: ReadyState, BE_IDLE: IdleState, SHOT: ShotState},
+                Z_KEY_DOWN: ReadyState, Z_KEY_UP: ReadyState, X_KEY_DOWN: ReadyState, BE_IDLE: IdleState, SHOT: ShotState
+                , DEAD: EventState},
 
     ShotState: {UP_KEY_DOWN: ShotState, UP_KEY_UP: ShotState, DOWN_KEY_DOWN: ShotState, DOWN_KEY_UP: ShotState,
                     LEFT_KEY_DOWN: ShotState, LEFT_KEY_UP: ShotState,RIGHT_KEY_DOWN: ShotState, RIGHT_KEY_UP: ShotState,
-                    Z_KEY_DOWN: ShotState, Z_KEY_UP: ShotState, X_KEY_DOWN: ShotState, BE_IDLE: IdleState}
+                    Z_KEY_DOWN: ShotState, Z_KEY_UP: ShotState, X_KEY_DOWN: ShotState, BE_IDLE: IdleState,DEAD: DeadState},
+
+    DeadState: {UP_KEY_DOWN: DeadState, UP_KEY_UP: DeadState, DOWN_KEY_DOWN: DeadState, DOWN_KEY_UP: DeadState,
+                LEFT_KEY_DOWN: DeadState, LEFT_KEY_UP: DeadState,RIGHT_KEY_DOWN: DeadState, RIGHT_KEY_UP: DeadState,
+                Z_KEY_DOWN: DeadState,Z_KEY_UP: DeadState,X_KEY_DOWN: DeadState, BE_IDLE: IdleState}
 }
 
 class Kirby:
+    scoreBoard = None
     def __init__(self):
         self.x, self.y =-10.0,384.0
         self.radius = 20
@@ -390,7 +425,7 @@ class Kirby:
         self.HP = 5
         self.HPUI = kirbyHPUI(self.HP)
 
-        self.life = 2
+        self.life = life
         self.lifeUI = kirbyLifeUI(self.life)
 
         self.FRAMES_PER_ACTION = 8
@@ -398,8 +433,8 @@ class Kirby:
         self.boom = 2
         self.boomUI = kirbyBoomUI(self.boom)
 
-
-        self.scoreBoard = ScoreBoard()
+        if Kirby.scoreBoard == None:
+            Kirby.scoreBoard = ScoreBoard()
 
         self.event_que = []
         self.cur_state = EventState
@@ -409,8 +444,6 @@ class Kirby:
         self.MAX = load_image('image/kirby/FullShot.png')
         #pass
 
-    def add_event(self, event):
-        self.event_que.insert(0, event)
 
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
@@ -438,9 +471,9 @@ class Kirby:
         self.boomUI.update(self.boom)
 
         if len(self.event_que) > 0:
-            event = self.event_que.pop()
-            self.cur_state.exit(self, event)
             if self.isEvent == False:
+                event = self.event_que.pop()
+                self.cur_state.exit(self, event)
                 self.cur_state = next_state_table[self.cur_state][event]
                 self.cur_state.enter(self, event)
 
@@ -456,6 +489,9 @@ class Kirby:
         self.boomUI.render()
         self.scoreBoard.render()
         #pass
+
+    def add_event(self, event):
+        self.event_que.insert(0, event)
 
     def Bullet1(self):
         # fill here

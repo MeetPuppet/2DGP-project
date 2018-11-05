@@ -54,6 +54,8 @@ def remove_object2(o, num):
         objects[num].remove(o)
         del o
 
+
+
 def intersectRectToRect():
     for i in range(2):
         for bullet in objects[4]:

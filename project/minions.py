@@ -30,9 +30,8 @@ class Scarfy:
         self.gravity = 100
         self.frame = 0
         self.liveTime = 0
-        if moveNumber>=2:
-            self.x, self.y = point[0], point[1]+6
-            self.stratPoint = (point[0], point[1])
+        self.x, self.y = point[0], point[1]+6
+        self.stratPoint = (point[0], point[1])
 
         if Scarfy.image == None:
             Scarfy.image = load_image("image/minion/scarfy.png")
