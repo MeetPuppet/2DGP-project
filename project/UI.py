@@ -157,13 +157,14 @@ class bossGause:
         self.curHPimage = load_image("image/UI/current.png")
         pass
 
-    def update(self,HP=100):
+    def update(self,HP):
         self.HP = HP
         pass
 
     def render(self):
         self.maxHPimage.draw(self.point[0],self.point[1])
-        self.curHPimage.clip_draw(0,0,395+(395-int(self.maxHP*(395/self.HP))),41,self.point[0]+((395-int(self.maxHP*(395/self.HP))))//2,self.point[1])
+        self.curHPimage.clip_draw(0,0,375-(355-int(self.HP*(355/self.maxHP))),41,
+                                  (self.point[0]-10)-int(((355-int(self.HP*(355/self.maxHP))))//2), self.point[1])
         pass
 
 

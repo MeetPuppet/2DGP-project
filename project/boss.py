@@ -27,7 +27,7 @@ class Batafire:
     DEAD = None
     def __init__(self):
         self.x, self.y = 1500,768//2
-        self.maxHP, self.HP = 500, 500
+        self.maxHP, self.HP = 500, 10
         self.radius = 90
         self.frame = 0
         self.state = 0
@@ -52,10 +52,8 @@ class Batafire:
 
         pass
     def update(self):
-
         if self.gause == None:
             self.gause = bossGause(self.maxHP)
-            game_world.add_object(self.gause, 7)
         else:
             self.gause.update(self.HP)
 
@@ -147,6 +145,7 @@ class Batafire:
             pass
         pass
     def render(self):
+        self.gause.render()
         if self.state == 0:
             self.IDLE.clip_draw(int(self.frame) * 428, 0 , 428, 448, self.x, self.y)
             pass
