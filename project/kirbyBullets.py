@@ -40,7 +40,7 @@ class kirbyBullet1:
     def getRect(self):
         return [(self.x-36,self.x+36,self.y-5,self.y+5),(self.x-36,self.x+36,self.y-5,self.y+5)]
         pass
-    def getKind(self): return self.size
+    def getSize(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
         game_world.remove_object2(self, 4)
@@ -72,7 +72,7 @@ class kirbyBullet2:
     def getRect(self):
         return [(self.x-12,self.x+49,self.y-6,self.y+6),
                 (self.x+3,self.x+33,self.y-12,self.y+12)]
-    def getKind(self): return self.size
+    def getSize(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
         game_world.remove_object2(self, 4)
@@ -106,8 +106,9 @@ class maxBullet:
     def getRect(self):
         return [(self.x-19,self.x+101,self.y-(75-24),self.y+(75+24)),
                 (self.x+11,self.x+71,self.y-(75-49),self.y+(75+49))]
-    def getKind(self): return self.size
+    def getSize(self): return self.size
     def getDamage(self): return self.damage
+    def getSize(self): return self.size
     def removeBullet(self):
         game_world.remove_object2(self, 4)
         game_world.add_object(Beat((self.x, self.y)), 7)
@@ -137,7 +138,7 @@ class starBullet:
     def getRect(self):
         return [(self.x - (15 - 0), self.x + (15 + 0), self.y - (14 - 7), self.y + (14 + 7)),
                 (self.x + (15 - 7), self.x + (15 + 7), self.y - (14 - 0), self.y + (14 + 0))]
-    def getKind(self): return self.size
+    def getSize(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
         game_world.remove_object2(self, 4)
