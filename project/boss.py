@@ -7,6 +7,7 @@ from UI import bossGause
 from enemyBullets import Fireball
 
 
+
 # fill expressions correctly
 PIXEL_PER_METER = (10.0 / 0.3)
 RUN_SPEED_KMPH = 20.0
@@ -27,7 +28,7 @@ class Batafire:
     DEAD = None
     def __init__(self):
         self.x, self.y = 1500,768//2
-        self.maxHP, self.HP = 500, 50
+        self.maxHP, self.HP = 500, 500
         self.radius = 90
         self.frame = 0
         self.state = 0
@@ -36,7 +37,7 @@ class Batafire:
         self.backMove = False
         self.UpMove = False
         self.count = 0
-        self.falling = 5
+        self.falling = RUN_SPEED_PPS
         self.gause = None
         #실행초에 어딘가 이미지를 로드해놓고 교체하는 방식이라면
         if Batafire.IDLE == None:
@@ -133,8 +134,8 @@ class Batafire:
             if self.falling > 0 : self.frame = 0
             else : self.frame = 1
 
-            self.y+=self.falling
-            self.falling-=0.2
+            self.y+=self.falling*game_framework.frame_time
+            self.falling-=(RUN_SPEED_PPS)*game_framework.frame_time
 
             if self.falling > -1 :
                 get_time()
