@@ -19,7 +19,6 @@ def WINSIZEX(): return 1024
 def WINSIZEY(): return 768
 
 life = 2
-score = 0
 # move Speed
 PIXEL_PER_METER = (10.0 / 0.3)
 RUN_SPEED_KMPH = 50.0
@@ -463,9 +462,9 @@ class Kirby:
             self.MAX.opacify(1)
 
         if self.HP == 5 and self.life == 2:
-            self.scoreBoard.upScore(2)
+            self.scoreBoard.upScore(game_framework.frame_time*20)
         if self.grog == True:
-            self.scoreBoard.upScore(2)
+            self.scoreBoard.upScore(game_framework.frame_time*20)
 
         self.scoreBoard.update()
         self.cur_state.do(self)
