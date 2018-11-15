@@ -1,7 +1,9 @@
 from pico2d import *
 import game_world
 import game_framework
+from BehaviorTree import BehaviorTree, SelectorNode, SequenceNode, LeafNode
 import random
+
 
 from UI import bossGause
 from enemyBullets import Fireball
@@ -58,7 +60,6 @@ class Batafire:
         else:
             self.gause.update(self.HP)
 
-        if self.guarding > 0 : self.guarding -= 1
         if self.HP <= 0: self.state = 4
 
         if self.state == 0:
@@ -165,23 +166,37 @@ class Batafire:
         pass
     pass
 
+    def trace_player(self):
+        kirby= game_world.get_player_layer()
+        targetY = kirby.getPoint()[1]
+
+        if targetY > self.y+10:
+            self.y += RUN_SPEED_PPS * game_framework.frame_time
+        else:
+            self.y -= RUN_SPEED_PPS * game_framework.frame_time
+
+        pass
+    def shoot_fire(self):
+        pass
+    def rushing_body(self):
+        pass
+
     def downHP(self,damage):
         if self.guarding < 0:
             self.HP -= damage
             self.guarding = 10
         pass
 
-    def getPoint(self): return (self.x, self.y)
+    def getPoint(self): return (self.x-14, self.y-32)
     def getRadius(self): return self.radius
 
     def getRect(self):
-        return [(self.x-100,self.x+100,self.y-75,self.y+75),
-                (self.x-75,self.x+75,self.y-150,self.y-50)]
+        return [(self.x-14-75,self.x-14+75,self.y-32-37,self.y-32+37),
+                (self.x-14-37,self.x-14+37,self.y-32-80,self.y-32+70)]
 
     def getState(self): return self.state
     def getHP(self): return self.HP
     def getHurt(self, damage):
-        if self.guarding <=0:
-            self.HP-= damage
+        self.HP-= damage
     def isBoss(self): return True
     def Kill(self): self.HP = 0

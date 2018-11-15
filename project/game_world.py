@@ -20,10 +20,11 @@ from Items import BoomUp
 objects = [[],[],[],[],[],[],[],[]]
 
 import math
+PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
 def getDistance(startPoint, endPoint):
-    Xdistance = startPoint[0] - endPoint[0]
-    Ydistance = startPoint[1] - endPoint[1]
-    return math.sqrt(Xdistance**2+Ydistance**2)
+    Xdistance = (startPoint[0] - endPoint[0])**2
+    Ydistance = (startPoint[1] - endPoint[1])**2
+    return math.sqrt(Xdistance+Ydistance)
 
 def getAngle(startPoint, endPoint):
 
@@ -227,3 +228,6 @@ def all_objects():
     for i in range(len(objects)):
         for o in objects[i]:
             yield o
+
+def get_player_layer():
+    return objects[1]
