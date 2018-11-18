@@ -90,6 +90,7 @@ class Scarfy:
     def getSize(self): return 0
     def shotTiming(self): return self.shotTime
     def isBoss(self): return False
+    def isDead(self): return self.isDead
 
     pass
 
@@ -138,4 +139,15 @@ class SirKibble:
     def getHurt(self,n): self.isDead = True
     def getFrame(self): return self.frame
     def isBoss(self): return False
+    def isDead(self): return self.isDead
+    pass
+
+class miniBata:
+    pass
+
+class blueClay:
+    pass
+
+
+class sunny:
     pass

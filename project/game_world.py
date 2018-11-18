@@ -100,24 +100,25 @@ def intersectRectToRect():
                                 bullet.removeBullet()
                             objects[1][0].upScore()
                 else:
-                    if (B[0]<A[0] and B[1]>A[0]) or (A[0]<B[0] and A[1]>B[0]):
-                        if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
-                            enemy.getHurt(bullet.getDamage())
-                            bullet.removeBullet()
-                            objects[1][0].upScore()
-                        elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
-                            enemy.getHurt(bullet.getDamage())
-                            bullet.removeBullet()
-                            objects[1][0].upScore()
-                    elif (B[0]<A[1] and B[1]>A[1]) or (A[0]<B[1] and A[1]>B[1]):
-                        if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
-                            enemy.getHurt(bullet.getDamage())
-                            bullet.removeBullet()
-                            objects[1][0].upScore()
-                        elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
-                            enemy.getHurt(bullet.getDamage())
-                            bullet.removeBullet()
-                            objects[1][0].upScore()
+                    if enemy.isDead() == False:
+                        if (B[0]<A[0] and B[1]>A[0]) or (A[0]<B[0] and A[1]>B[0]):
+                            if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
+                                enemy.getHurt(bullet.getDamage())
+                                bullet.removeBullet()
+                                objects[1][0].upScore()
+                            elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
+                                enemy.getHurt(bullet.getDamage())
+                                bullet.removeBullet()
+                                objects[1][0].upScore()
+                        elif (B[0]<A[1] and B[1]>A[1]) or (A[0]<B[1] and A[1]>B[1]):
+                            if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
+                                enemy.getHurt(bullet.getDamage())
+                                bullet.removeBullet()
+                                objects[1][0].upScore()
+                            elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
+                                enemy.getHurt(bullet.getDamage())
+                                bullet.removeBullet()
+                                objects[1][0].upScore()
 
         for Ebullet in objects[6]:
             A=Ebullet.getRect()[i]
@@ -183,11 +184,14 @@ def intersectDistance():
         for player in objects[1]:
             for j in (2, 6):
                 for enemy in objects[j]:
-
                     if getDistance(player.getPoint(), enemy.getPoint()) < player.getRadius() + enemy.getRadius()+150:
                         player.onGrog()
+
                         if getDistance(player.getPoint(), enemy.getPoint()) < player.getRadius() + enemy.getRadius():
-                            player.hit()
+                            if j == 2 and enemy.isDead() == False:
+                                player.hit()
+                            elif j == 6:
+                                player.hit()
                     else:
                         if player.getHP() > 1:
                             player.offGrog()

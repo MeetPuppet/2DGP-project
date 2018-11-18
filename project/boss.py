@@ -199,4 +199,15 @@ class Batafire:
     def getHurt(self, damage):
         self.HP-= damage
     def isBoss(self): return True
+    def isDead(self):
+        if self.HP > 0:
+            return False
+        else:
+            return True
     def Kill(self): self.HP = 0
+
+class kracko:
+    pass
+
+class darkZero:
+    pass
