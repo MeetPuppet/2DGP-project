@@ -188,7 +188,7 @@ def intersectDistance():
                         player.onGrog()
 
                         if getDistance(player.getPoint(), enemy.getPoint()) < player.getRadius() + enemy.getRadius():
-                            if j == 2 and enemy.isDead() == False:
+                            if j == 2:
                                 player.hit()
                             elif j == 6:
                                 player.hit()

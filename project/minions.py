@@ -85,7 +85,6 @@ class Scarfy:
         return [(self.x-25,self.x+25,self.y-12,self.y+12),
                 (self.x - 12, self.x + 12, self.y - 25, self.y + 25)]
 
-    def getState(self): return self.isDead
     def getHurt(self,n): self.isDead = True
     def getSize(self): return 0
     def shotTiming(self): return self.shotTime
@@ -135,7 +134,6 @@ class SirKibble:
         return [(self.x-35,self.x+35,self.y-17,self.y+17),
                 (self.x - 17, self.x + 17, self.y - 35, self.y + 35)]
 
-    def getState(self): return self.isDead
     def getHurt(self,n): self.isDead = True
     def getFrame(self): return self.frame
     def isBoss(self): return False
@@ -143,11 +141,114 @@ class SirKibble:
     pass
 
 class miniBata:
+    image =None
+    def __init__(self,point):
+        self.radius = 30
+        self.isDead = False
+        self.frame = 0
+        self.x, self.y = point[0], point[1]
+
+        if miniBata.image == None:
+            miniBata.image = load_image("image/minion/minibata.png")
+            pass
+        pass
+    def update(self):
+        self.x -= (RUN_SPEED_PPS*2 * game_framework.frame_time)
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
+        if self.x < -100 or self.isDead:
+            game_world.remove_object2(self, 2)
+        pass
+    def render(self):
+        self.image.clip_draw(int(self.frame)*160,0,160,168,self.x,self.y)
+        pass
     pass
+
+    def getRadius(self): return self.radius
+    def getPoint(self): return (self.x-7, self.y-16)
+
+    def getRect(self):
+        return [(self.x-7-37,self.x-7+37,self.y-16-18,self.y-16+18),
+                (self.x-7-18,self.x-7+18,self.y-16-40,self.y-16+30)]
+
+    def getHurt(self,n): self.isDead = True
+    def getFrame(self): return self.frame
+    def isBoss(self): return False
+    def isDead(self): return self.isDead
 
 class blueClay:
+    image =None
+    def __init__(self,point):
+        self.downSpeed = RUN_SPEED_KMPH
+        self.radius = 30
+        self.isDead = False
+        self.frame = 0
+        self.x, self.y = point[0], point[1]
+
+        if blueClay.image == None:
+            blueClay.image = load_image("image/minion/blueClay.png")
+            pass
+        pass
+    def update(self):
+        if self.downSpeed < 0:
+            self.downSpeed = RUN_SPEED_KMPH*3
+
+        self.downSpeed -= RUN_SPEED_KMPH * game_framework.frame_time
+        self.y -= (self.downSpeed * game_framework.frame_time)
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
+
+        if self.y < -60 or self.isDead:
+            game_world.remove_object2(self, 2)
+        pass
+    def render(self):
+        self.image.clip_draw(int(self.frame)*100,0,100,52,self.x,self.y)
+        pass
     pass
 
+    def getRadius(self): return self.radius
+    def getPoint(self): return (self.x, self.y)
+
+    def getRect(self):
+        return [(self.x-50,self.x+50,self.y-7,self.y+7),
+                (self.x - 100, self.x + 100, self.y - 4, self.y + 4)]
+
+    def getHurt(self,n): self.isDead = True
+    def getFrame(self): return self.frame
+    def isBoss(self): return False
+    def isDead(self): return self.isDead
+    pass
 
 class sunny:
+    image =None
+    def __init__(self,point):
+        self.radius = 30
+        self.isDead = False
+        self.frame = 0
+        self.x, self.y = point[0], point[1]
+
+        if miniBata.image == None:
+            miniBata.image = load_image("image/minion/minibata.png")
+            pass
+        pass
+    def update(self):
+        self.x -= (RUN_SPEED_PPS*2 * game_framework.frame_time)
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
+        if self.x < -100 or self.isDead:
+            game_world.remove_object2(self, 2)
+        pass
+    def render(self):
+        self.image.clip_draw(int(self.frame)*160,0,160,168,self.x,self.y)
+        pass
+    pass
+
+    def getRadius(self): return self.radius
+    def getPoint(self): return (self.x, self.y)
+
+    def getRect(self):
+        return [(self.x-35,self.x+35,self.y-17,self.y+17),
+                (self.x - 17, self.x + 17, self.y - 35, self.y + 35)]
+
+    def getHurt(self,n): self.isDead = True
+    def getFrame(self): return self.frame
+    def isBoss(self): return False
+    def isDead(self): return self.isDead
     pass

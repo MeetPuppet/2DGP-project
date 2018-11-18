@@ -23,6 +23,7 @@ from Items import BoomUp
 from boss import Batafire
 from minions import Scarfy
 from minions import SirKibble
+from minions import blueClay
 
 from enemyBullets import enemyBullet
 from enemyBullets import Fireball
@@ -155,6 +156,7 @@ def handle_events():
             game_world.add_object(Coin((1024//2, 768//2)), 3)
             game_world.add_object(PowerUp((1024//2, 768//2)), 3)
             game_world.add_object(BoomUp((1024//2, 768//2)), 3)
+            game_world.add_object(blueClay((512, 768)), 2)
 
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_2:
@@ -178,8 +180,8 @@ i=0
 
 def update():
     global playTime, waveCount, i
-    game_world.intersectRectToRect()
     game_world.intersectDistance()
+    game_world.intersectRectToRect()
     if waveCount != 6:
         playTime+=1
     if playTime%10 == 0 and i < len(waves[waveCount]) and waveCount < len(waves):

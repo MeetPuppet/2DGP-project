@@ -371,7 +371,7 @@ class DeadState:
     def do(Kirby):
         global life
         Kirby.y -= (RUN_SPEED_PPS) * game_framework.frame_time
-        if Kirby.y < -50 :
+        if Kirby.y < -50 and life > 0:
             life-=1
             Kirby.__init__()
 

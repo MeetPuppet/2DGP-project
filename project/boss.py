@@ -7,6 +7,7 @@ import random
 
 from UI import bossGause
 from enemyBullets import Fireball
+from minions import miniBata
 
 
 
@@ -98,6 +99,7 @@ class Batafire:
         elif self.state == 1:
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
             if int(self.frame) == 3:
+                for i in range(3): game_world.add_object(miniBata((1300,random.randint(100,668))),2)
                 if random.randint(0,1) == 0:
                     self.state = 2
                     self.wait = 3
