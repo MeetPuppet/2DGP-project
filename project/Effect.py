@@ -17,7 +17,7 @@ class Beat:
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if int(self.frame) == 3:
-            game_world.remove_object2(self, 7)
+            game_world.remove_object2(self, 10)
             pass
         pass
     def render(self):

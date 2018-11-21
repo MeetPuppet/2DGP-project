@@ -200,7 +200,7 @@ class Batafire:
     def getHP(self): return self.HP
     def getHurt(self, damage):
         self.HP-= damage
-    def isBoss(self): return True
+
     def isDead(self):
         if self.HP > 0:
             return False

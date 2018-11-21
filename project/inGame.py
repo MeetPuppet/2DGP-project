@@ -168,7 +168,7 @@ def handle_events():
             game_world.add_object(SirKibbleCutter((1024//2, 768//2)), 5)
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_4:
-            game_world.add_object(Batafire(), 2)
+            game_world.add_object(Batafire(), 5)
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_5:
             boss1.Kill()
@@ -180,8 +180,10 @@ i=0
 
 def update():
     global playTime, waveCount, i
-    game_world.intersectDistance()
-    game_world.intersectRectToRect()
+    #game_world.intersectDistance()
+    #game_world.intersectRectToRect()
+    game_world.CommunicateObjects()
+    '''
     if waveCount != 6:
         playTime+=1
     if playTime%10 == 0 and i < len(waves[waveCount]) and waveCount < len(waves):
@@ -190,7 +192,7 @@ def update():
     if playTime % 200 == 0 and waveCount < len(waves)-1:
         waveCount+=1
         i = 0
-
+    '''
 
 
     for game_object in game_world.all_objects():

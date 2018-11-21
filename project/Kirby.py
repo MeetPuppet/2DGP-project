@@ -499,30 +499,30 @@ class Kirby:
     def Bullet1(self):
         # fill here
         bullet = kirbyBullet1((self.x, self.y))
-        game_world.add_object(bullet,4)
+        game_world.add_object(bullet,3)
         pass
 
     def Bullet2(self):
         # fill here
         bullet = kirbyBullet2((self.x, self.y))
-        game_world.add_object(bullet,4)
+        game_world.add_object(bullet,3)
         pass
 
     def MaxBullet(self):
         # fill here
         bullet = maxBullet((self.x, self.y))
-        game_world.add_object(bullet,4)
+        game_world.add_object(bullet,3)
         pass
 
     def StarBullet(self):
         # fill here
         bullet = starBullet((self.x, self.y))
-        game_world.add_object(bullet,4)
+        game_world.add_object(bullet,3)
         pass
 
     def Boom(self):
         boom = kirbyBoom((self.x, self.y))
-        game_world.add_object(boom, 5)
+        game_world.add_object(boom, 6)
 
     def getPoint(self): return (self.x,self.y)
     def getRadius(self): return self.radius

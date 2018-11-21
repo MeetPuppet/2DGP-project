@@ -43,8 +43,8 @@ class kirbyBullet1:
     def getSize(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
-        game_world.remove_object2(self, 4)
-        game_world.add_object(Beat((self.x, self.y)), 7)
+        game_world.remove_object2(self, 3)
+        game_world.add_object(Beat((self.x, self.y)),10)
     pass
 
 class kirbyBullet2:
@@ -75,8 +75,8 @@ class kirbyBullet2:
     def getSize(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
-        game_world.remove_object2(self, 4)
-        game_world.add_object(Beat((self.x, self.y)), 7)
+        game_world.remove_object2(self, 3)
+        game_world.add_object(Beat((self.x, self.y)), 10)
     pass
 
 class maxBullet:
@@ -108,7 +108,6 @@ class maxBullet:
                 (self.x+11,self.x+71,self.y-(75-49),self.y+(75+49))]
     def getSize(self): return self.size
     def getDamage(self): return self.damage
-    def getSize(self): return self.size
     def removeBullet(self):
         game_world.remove_object2(self, 4)
         game_world.add_object(Beat((self.x, self.y)), 7)
@@ -141,8 +140,8 @@ class starBullet:
     def getSize(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
-        game_world.remove_object2(self, 4)
-        game_world.add_object(Beat((self.x, self.y)), 7)
+        game_world.remove_object2(self, 3)
+        game_world.add_object(Beat((self.x, self.y)), 10)
     pass
 
 class kirbyBoom:
@@ -162,7 +161,6 @@ class kirbyBoom:
         self.limit -= game_framework.frame_time
         if self.limit < 1.0:
             self.activated = True
-
         if self.activated == False:
             self.radius = 23
             self.x+=(RUN_SPEED_PPS/40)*game_framework.frame_time
@@ -170,7 +168,7 @@ class kirbyBoom:
             self.radius = 200
             self.x+=(RUN_SPEED_PPS/60)*game_framework.frame_time
         if self.limit < 0:
-            game_world.remove_object2(self, 5)
+            game_world.remove_object2(self, 6)
         pass
     def render(self):
         if self.activated == False:

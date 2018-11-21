@@ -10,14 +10,17 @@ from Items import BoomUp
 
 # layer 0: Background Objects
 # layer 1: player Objects
-# layer 2: enemy Objects
-# layer 3: item Objects
-# layer 4: playerBullet Objects
-# layer 5: Boom Objects
-# layer 6: enemyBullet Objects
-# layer 7: effect Objects
+# layer 2: suporter Objects
+# layer 3: playerBullet Objects        (self->enemys)
+# layer 4: minion Objects              (self->Kirby)
+# layer 5: Boss Objects                (self->Kirby)
+# layer 6: Boom Objects                (self->enemys)
+# layer 7: item Objects                (self->Kirby)
+# layer 8: enemyBullet Objects         (self->Kirby)
+# layer 9: enemyUnstoppable Lager Objects (self->Kirby)
+# layer 10: effect Objects
 
-objects = [[],[],[],[],[],[],[],[]]
+objects = [[],[],[],[],[],[],[],[],[],[],[]]
 
 import math
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
@@ -60,143 +63,109 @@ def remove_object2(o, num):
         del o
 
 
-
-def intersectRectToRect():
-    for i in range(2):
-        for bullet in objects[4]:
-            A=bullet.getRect()[i]
-            for enemy in objects[2]:
-                B=enemy.getRect()[i]
-
-                if enemy.isBoss() == False:
-                    if (B[0]<A[0] and B[1]>A[0]) or (A[0]<B[0] and A[1]>B[0]):
-                        if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
-                            itemNum = random.randint(0,10)
-                            summonItem(enemy.getPoint(),itemNum)
-                            enemy.getHurt(bullet.getDamage())
-                            if bullet.getSize() < 2:
-                                bullet.removeBullet()
-                            objects[1][0].upScore()
-                        elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
-                            itemNum = random.randint(0,10)
-                            summonItem(enemy.getPoint(),itemNum)
-                            enemy.getHurt(bullet.getDamage())
-                            if bullet.getSize() < 2:
-                                bullet.removeBullet()
-                            objects[1][0].upScore()
-                    elif (B[0]<A[1] and B[1]>A[1]) or (A[0]<B[1] and A[1]>B[1]):
-                        if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
-                            itemNum = random.randint(0,10)
-                            summonItem(enemy.getPoint(),itemNum)
-                            enemy.getHurt(bullet.getDamage())
-                            if bullet.getSize() < 2:
-                                bullet.removeBullet()
-                            objects[1][0].upScore()
-                        elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
-                            enemy.getHurt(bullet.getDamage())
-                            itemNum = random.randint(0,10)
-                            summonItem(itemNum)
-                            if bullet.getSize() < 2:
-                                bullet.removeBullet()
-                            objects[1][0].upScore()
-                else:
-                    if enemy.isDead() == False:
-                        if (B[0]<A[0] and B[1]>A[0]) or (A[0]<B[0] and A[1]>B[0]):
-                            if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
-                                enemy.getHurt(bullet.getDamage())
-                                bullet.removeBullet()
-                                objects[1][0].upScore()
-                            elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
-                                enemy.getHurt(bullet.getDamage())
-                                bullet.removeBullet()
-                                objects[1][0].upScore()
-                        elif (B[0]<A[1] and B[1]>A[1]) or (A[0]<B[1] and A[1]>B[1]):
-                            if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
-                                enemy.getHurt(bullet.getDamage())
-                                bullet.removeBullet()
-                                objects[1][0].upScore()
-                            elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
-                                enemy.getHurt(bullet.getDamage())
-                                bullet.removeBullet()
-                                objects[1][0].upScore()
-
-        for Ebullet in objects[6]:
-            A=Ebullet.getRect()[i]
-            for player in objects[1]:
-                B=player.getRect()[i]
-                if (B[0]<A[0] and B[1]>A[0]) or (A[0]<B[0] and A[1]>B[0]):
-                    if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
-                        player.hit()
-                        Ebullet.removeBullet()
-                    elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
-                        player.hit()
-                        Ebullet.removeBullet()
-                elif (B[0]<A[1] and B[1]>A[1]) or (A[0]<B[1] and A[1]>B[1]):
-                    if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
-                        player.hit()
-                        Ebullet.removeBullet()
-                    elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
-                        player.hit()
-                        Ebullet.removeBullet()
-
-        for Item in objects[3]:
-            A=Item.getRect()[i]
-            for player in objects[1]:
-                B=player.getRect()[i]
-                if (B[0]<A[0] and B[1]>A[0]) or (A[0]<B[0] and A[1]>B[0]):
-                    if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
-                        itemPower(player,Item.getItemNum())
-                        objects[3].remove(Item)
-                    elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
-                        itemPower(player,Item.getItemNum())
-                        objects[3].remove(Item)
-                elif (B[0]<A[1] and B[1]>A[1]) or (A[0]<B[1] and A[1]>B[1]):
-                    if (B[2]<A[2] and B[3]>A[2])or (A[2]<B[2] and A[3]>B[2]):
-                        itemPower(player,Item.getItemNum())
-                        objects[3].remove(Item)
-                    elif (B[2]<A[3] and B[3]>A[3])or (A[2]<B[3] and A[3]>B[3]):
-                        itemPower(player,Item.getItemNum())
-                        objects[3].remove(Item)
-
+def CommunicateObjects():
+    KirbyBulletCollision()
+    BossCollision()
+    MinionsCollision()
+    EnemyBulletCollision()
+    KirbyBoomCollision()
+    ItemCollision()
     pass
 
-def intersectDistance():
+def KirbyBoomCollision():
+    KirbyBoomIntersectDistance()
+    KirbyBoomIntersectRectToRect()
+    pass
 
-    for i in range(2):
-        for boom in objects[5]:
-            for j in (2, 6):
-                for enemy in objects[j]:
-                    if j == 2 and enemy.isBoss() == True:
-                        if getDistance(boom.getPoint(), enemy.getPoint()) < boom.getRadius() + enemy.getRadius():
-                            boom.boomActivate()
-                            enemy.getHurt(10)
-                    elif j==6:
-                        if getDistance(boom.getPoint(), enemy.getPoint()) < boom.getRadius() + enemy.getRadius():
-                            boom.boomActivate()
-                            enemy.removeBullet()
-                    else:
-                        if getDistance(boom.getPoint(), enemy.getPoint()) < boom.getRadius() + enemy.getRadius():
-                            boom.boomActivate()
-                            itemNum = random.randint(0,10)
-                            summonItem(enemy.getPoint(),itemNum)
-                            enemy.getHurt(1)
+def KirbyBulletCollision():
+    KirbyBulletIntersectRectToRect()
+    KirbyBulletIntersectDistance()
+    pass
+def EnemyBulletCollision():
+    EnemyBulletIntersectRectToRect()
+    EnemyBulletIntersectDistance()
+    pass
 
-        for player in objects[1]:
-            for j in (2, 6):
-                for enemy in objects[j]:
-                    if getDistance(player.getPoint(), enemy.getPoint()) < player.getRadius() + enemy.getRadius()+150:
-                        player.onGrog()
+def BossCollision():
+    BossIntersectDistance()
+    BossIntersectRectToRect()
+    pass
+def MinionsCollision():
+    MinionsIntersectDistance()
+    MinionsIntersectRectToRect()
+    pass
+def ItemCollision():
+    ItemIntersectRectToRect()
+    ItemIntersectDistance()
+    pass
 
-                        if getDistance(player.getPoint(), enemy.getPoint()) < player.getRadius() + enemy.getRadius():
-                            if j == 2:
-                                player.hit()
-                            elif j == 6:
-                                player.hit()
-                    else:
-                        if player.getHP() > 1:
-                            player.offGrog()
+def BossIntersectRectToRect():
+    pass
+
+def BossIntersectDistance():
+    pass
 
 
+
+def MinionsIntersectRectToRect():
+    pass
+
+def MinionsIntersectDistance():
+    pass
+
+
+
+def EnemyBulletIntersectRectToRect():
+    pass
+
+def EnemyBulletIntersectDistance():
+    pass
+
+
+def ItemIntersectRectToRect():
+    pass
+
+def ItemIntersectDistance():
+    pass
+
+
+
+def KirbyBulletIntersectRectToRect():
+    for RectNum in range(2):
+        for boss in objects[5]:
+            A=boss.getRect()[RectNum]
+            for bullet in objects[3]:
+                B=bullet.getRect()[RectNum]
+                if (B[0] < A[0] and B[1] > A[0]) or (A[0] < B[0] and A[1] > B[0]):
+                    if (B[2] < A[2] and B[3] > A[2]) or (A[2] < B[2] and A[3] > B[2]):
+                        boss.getHurt(bullet.getDamage())
+                        bullet.removeBullet()
+                        objects[1][0].upScore()
+                    elif (B[2] < A[3] and B[3] > A[3]) or (A[2] < B[3] and A[3] > B[3]):
+                        boss.getHurt(bullet.getDamage())
+                        bullet.removeBullet()
+                        objects[1][0].upScore()
+                elif (B[0] < A[1] and B[1] > A[1]) or (A[0] < B[1] and A[1] > B[1]):
+                    if (B[2] < A[2] and B[3] > A[2]) or (A[2] < B[2] and A[3] > B[2]):
+                        boss.getHurt(bullet.getDamage())
+                        bullet.removeBullet()
+                        objects[1][0].upScore()
+                    elif (B[2] < A[3] and B[3] > A[3]) or (A[2] < B[3] and A[3] > B[3]):
+                        boss.getHurt(bullet.getDamage())
+                        bullet.removeBullet()
+                        objects[1][0].upScore()
+    pass
+
+def KirbyBulletIntersectDistance():
+    pass
+
+
+
+def KirbyBoomIntersectRectToRect():
+    pass
+
+def KirbyBoomIntersectDistance():
+    pass
 
 
 def itemPower(o,num):

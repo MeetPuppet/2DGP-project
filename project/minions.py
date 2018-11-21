@@ -86,9 +86,8 @@ class Scarfy:
                 (self.x - 12, self.x + 12, self.y - 25, self.y + 25)]
 
     def getHurt(self,n): self.isDead = True
-    def getSize(self): return 0
     def shotTiming(self): return self.shotTime
-    def isBoss(self): return False
+
     def isDead(self): return self.isDead
 
     pass
@@ -136,7 +135,7 @@ class SirKibble:
 
     def getHurt(self,n): self.isDead = True
     def getFrame(self): return self.frame
-    def isBoss(self): return False
+
     def isDead(self): return self.isDead
     pass
 
@@ -172,7 +171,7 @@ class miniBata:
 
     def getHurt(self,n): self.isDead = True
     def getFrame(self): return self.frame
-    def isBoss(self): return False
+
     def isDead(self): return self.isDead
 
 class blueClay:
@@ -213,7 +212,7 @@ class blueClay:
 
     def getHurt(self,n): self.isDead = True
     def getFrame(self): return self.frame
-    def isBoss(self): return False
+
     def isDead(self): return self.isDead
     pass
 
@@ -249,6 +248,6 @@ class sunny:
 
     def getHurt(self,n): self.isDead = True
     def getFrame(self): return self.frame
-    def isBoss(self): return False
+
     def isDead(self): return self.isDead
     pass
