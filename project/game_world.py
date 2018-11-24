@@ -231,6 +231,23 @@ def KirbyBoomIntersectRectToRect():
     pass
 
 def KirbyBoomIntersectDistance():
+    for Boom in objects[6]:
+        A=Boom.getPoint()
+        for minion in objects[4]:
+            B=minion.getPoint()
+            if (A[0]-B[0])**2+(A[1]-B[1])**2 <= Boom.getRadius()**2:
+                Boom.boomActivate()
+                minion.getHurt(5)
+        for boss in objects[5]:
+            B=boss.getPoint()
+            if (A[0]-B[0])**2+(A[1]-B[1])**2 <= Boom.getRadius()**2:
+                Boom.boomActivate()
+                boss.getHurt(5)
+        for enemyBullet in objects[8]:
+            B=enemyBullet.getPoint()
+            if (A[0]-B[0])**2+(A[1]-B[1])**2 <= Boom.getRadius()**2:
+                Boom.boomActivate()
+                enemyBullet.removeBullet()
     pass
 
 
