@@ -100,9 +100,18 @@ def ItemCollision():
     pass
 
 def BossIntersectRectToRect():
+
     pass
 
 def BossIntersectDistance():
+    for boss in objects[5]:
+        A=boss.getPoint()
+        for player in objects[1]:
+            B=player.getPoint()
+            if (A[0]-B[0])**2+(A[1]-B[1])**2 <= boss.getRadius()**2:
+                player.Hit()
+                #여기부터
+
     pass
 
 

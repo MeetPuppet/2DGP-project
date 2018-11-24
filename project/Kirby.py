@@ -535,7 +535,7 @@ class Kirby:
 
     def getHP(self): return self.HP
     def heal(self): self.HP += 1
-    def hit(self):
+    def Hit(self):
         if self.guard <= 0:
             self.HP -= 1
             self.guard =3
