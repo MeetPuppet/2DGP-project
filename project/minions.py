@@ -71,7 +71,7 @@ class Scarfy:
                 pass
 
         if self.x > 1074 or self.x < -50 or self.isDead == True:
-            game_world.remove_object2(self, 2)
+            game_world.remove_object2(self, 4)
             pass
         pass
     def render(self):
@@ -120,7 +120,7 @@ class SirKibble:
                 self.frame = 3
 
         if self.y < 0 and self.frame == 3 or self.isDead == True:
-            game_world.remove_object2(self, 2)
+            game_world.remove_object2(self, 4)
         pass
     def render(self):
         self.image.clip_draw(int(self.frame)*72,0,72,72,self.x,self.y)
@@ -155,7 +155,7 @@ class miniBata:
         self.x -= (RUN_SPEED_PPS*2 * game_framework.frame_time)
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         if self.x < -100 or self.isDead:
-            game_world.remove_object2(self, 2)
+            game_world.remove_object2(self, 4)
         pass
     def render(self):
         self.image.clip_draw(int(self.frame)*160,0,160,168,self.x,self.y)
@@ -196,7 +196,7 @@ class blueClay:
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
 
         if self.y < -60 or self.isDead:
-            game_world.remove_object2(self, 2)
+            game_world.remove_object2(self, 4)
         pass
     def render(self):
         self.image.clip_draw(int(self.frame)*100,0,100,52,self.x,self.y)
@@ -232,7 +232,7 @@ class sunny:
         self.x -= (RUN_SPEED_PPS*2 * game_framework.frame_time)
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         if self.x < -100 or self.isDead:
-            game_world.remove_object2(self, 2)
+            game_world.remove_object2(self, 4)
         pass
     def render(self):
         self.image.clip_draw(int(self.frame)*160,0,160,168,self.x,self.y)

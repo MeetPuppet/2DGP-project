@@ -153,13 +153,17 @@ def handle_events():
             player.handle_event(event)
 
         if event.type == SDL_KEYDOWN and event.key == SDLK_1:
-            game_world.add_object(Coin((1024//2, 768//2)), 3)
-            game_world.add_object(PowerUp((1024//2, 768//2)), 3)
-            game_world.add_object(BoomUp((1024//2, 768//2)), 3)
-            game_world.add_object(blueClay((512, 768)), 2)
+            game_world.add_object(Coin((1024//2, 768//2)), 7)
+            game_world.add_object(PowerUp((1024//2, 768//2)), 7)
+            game_world.add_object(BoomUp((1024//2, 768//2)), 7)
 
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_2:
+            game_world.add_object(Scarfy(0),4)
+            game_world.add_object(Scarfy(1), 4)
+            game_world.add_object(Scarfy(2), 4)
+            game_world.add_object(SirKibble(),4)
+            game_world.add_object(blueClay((512, 768)), 4)
             #player.Hit()
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_3:

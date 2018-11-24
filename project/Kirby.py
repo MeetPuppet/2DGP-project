@@ -528,8 +528,8 @@ class Kirby:
     def getRadius(self): return self.radius
 
     def getRect(self):
-        return [(self.x-46,self.x+46,self.y-20,self.y+20),
-                (self.x - 23, self.x + 23, self.y - 40, self.y + 40)]
+        return [(self.x-23,self.x+23,self.y-10,self.y+10),
+                (self.x - 12, self.x + 12, self.y - 20, self.y + 20)]
 
     def upScore(self): self.scoreBoard.upScore()
 
