@@ -116,8 +116,8 @@ def BossIntersectDistance():
 
 def MinionsIntersectRectToRect():
     for RectNum in range(2):
-        for boss in objects[4]:
-            A=boss.getRect()[RectNum]
+        for enemy in objects[4]:
+            A=enemy.getRect()[RectNum]
             for player in objects[1]:
                 B=player.getRect()[RectNum]
                 if (B[0] < A[0] and B[1] > A[0]) or (A[0] < B[0] and A[1] > B[0]):
@@ -138,13 +138,57 @@ def MinionsIntersectDistance():
 
 
 def EnemyBulletIntersectRectToRect():
+    for RectNum in range(2):
+        for enemyBullet in objects[8]:
+            A=enemyBullet.getRect()[RectNum]
+            for player in objects[1]:
+                B=player.getRect()[RectNum]
+                if (B[0] < A[0] and B[1] > A[0]) or (A[0] < B[0] and A[1] > B[0]):
+                    if (B[2] < A[2] and B[3] > A[2]) or (A[2] < B[2] and A[3] > B[2]):
+                        player.Hit()
+                        enemyBullet.removeBullet()
+                    elif (B[2] < A[3] and B[3] > A[3]) or (A[2] < B[3] and A[3] > B[3]):
+                        player.Hit()
+                        enemyBullet.removeBullet()
+                elif (B[0] < A[1] and B[1] > A[1]) or (A[0] < B[1] and A[1] > B[1]):
+                    if (B[2] < A[2] and B[3] > A[2]) or (A[2] < B[2] and A[3] > B[2]):
+                        player.Hit()
+                        enemyBullet.removeBullet()
+                    elif (B[2] < A[3] and B[3] > A[3]) or (A[2] < B[3] and A[3] > B[3]):
+                        player.Hit()
+                        enemyBullet.removeBullet()
     pass
 
 def EnemyBulletIntersectDistance():
+    for enemyBullet in objects[8]:
+        A=enemyBullet.getPoint()
+        for player in objects[1]:
+            B=player.getPoint()
+            if (A[0]-B[0])**2+(A[1]-B[1])**2 <= enemyBullet.getRadius()**2:
+                player.Hit()
     pass
 
 
 def ItemIntersectRectToRect():
+    for RectNum in range(2):
+        for player in objects[1]:
+            A=player.getRect()[RectNum]
+            for Item in objects[7]:
+                B=Item.getRect()[RectNum]
+                if (B[0] < A[0] and B[1] > A[0]) or (A[0] < B[0] and A[1] > B[0]):
+                    if (B[2] < A[2] and B[3] > A[2]) or (A[2] < B[2] and A[3] > B[2]):
+                        itemPower(player, Item.getItemNum())
+                        objects[7].remove(Item)
+                    elif (B[2] < A[3] and B[3] > A[3]) or (A[2] < B[3] and A[3] > B[3]):
+                        itemPower(player, Item.getItemNum())
+                        objects[7].remove(Item)
+                elif (B[0] < A[1] and B[1] > A[1]) or (A[0] < B[1] and A[1] > B[1]):
+                    if (B[2] < A[2] and B[3] > A[2]) or (A[2] < B[2] and A[3] > B[2]):
+                        itemPower(player, Item.getItemNum())
+                        objects[7].remove(Item)
+                    elif (B[2] < A[3] and B[3] > A[3]) or (A[2] < B[3] and A[3] > B[3]):
+                        itemPower(player, Item.getItemNum())
+                        objects[7].remove(Item)
     pass
 
 def ItemIntersectDistance():
@@ -203,13 +247,13 @@ def itemPower(o,num):
 
 def summonItem(point, num):
     if num == 0:
-        add_object(Coin(point), 3)
+        add_object(Coin(point), 7)
         pass
     elif num == 1:
-        add_object(PowerUp(point), 3)
+        add_object(PowerUp(point), 7)
         pass
     elif num == 2:
-        add_object(BoomUp(point), 3)
+        add_object(BoomUp(point), 7)
         pass
     else:
         pass

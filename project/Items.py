@@ -44,7 +44,7 @@ class Coin:
         self.liveTime-=game_framework.frame_time
 
         if self.liveTime < 0:
-            game_world.remove_object2(self, 3)
+            game_world.remove_object2(self, 7)
         pass
     def render(self):
         if self.liveTime < 4 and self.frame%3==0:
@@ -90,7 +90,7 @@ class PowerUp:
 
         self.liveTime -= game_framework.frame_time
         if self.liveTime < 0:
-            game_world.remove_object2(self, 3)
+            game_world.remove_object2(self, 7)
         pass
 
     def render(self):
@@ -136,6 +136,8 @@ class BoomUp:
             self.angle = -self.angle
 
         self.liveTime-=game_framework.frame_time
+        if self.liveTime < 0:
+            game_world.remove_object2(self, 7)
         pass
     def render(self):
         if self.liveTime < 2 and int(self.frame)%3==0:

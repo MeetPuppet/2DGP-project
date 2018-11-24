@@ -42,7 +42,7 @@ class Scarfy:
         if self.shotTime > 0 : self.shotTime-=game_framework.frame_time
         else:
             #shot  +random.randint(-10,10)/10
-            game_world.add_object(enemyBullet((self.x,self.y),(self.x-1,self.y)), 6)
+            game_world.add_object(enemyBullet((self.x,self.y),(self.x-1,self.y)), 8)
             self.shotTime = 0.5
             pass
 
@@ -116,7 +116,7 @@ class SirKibble:
         else:
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)%3
             if int(self.frame) == 2:
-                game_world.add_object(SirKibbleCutter((self.x, self.y)), 6)
+                game_world.add_object(SirKibbleCutter((self.x, self.y)), 8)
                 self.frame = 3
 
         if self.y < 0 and self.frame == 3 or self.isDead == True:

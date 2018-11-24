@@ -57,7 +57,7 @@ class enemyBullet:
         self.y += -math.sin(self.angle) * self.dir * game_framework.frame_time
 
         if 1000 < getDistance(self.start,(self.x,self.y)):
-            game_world.remove_object2(self,6)
+            game_world.remove_object2(self,8)
         pass
     def render(self):
         self.image.draw(self.x, self.y)
@@ -74,7 +74,7 @@ class enemyBullet:
         return False
 
     def removeBullet(self):
-            game_world.remove_object2(self,6)
+            game_world.remove_object2(self,8)
 
 class SirKibbleCutter:
     image =None
@@ -91,7 +91,7 @@ class SirKibbleCutter:
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         self.x -= self.dir * game_framework.frame_time
         if self.x < -20:
-            game_world.remove_object2(self,6)
+            game_world.remove_object2(self,8)
 
     def render(self):
         self.image.clip_draw(int(self.frame)*69,0,69,48,self.x,self.y)
@@ -108,7 +108,7 @@ class SirKibbleCutter:
         return False
 
     def removeBullet(self):
-            game_world.remove_object2(self,6)
+            game_world.remove_object2(self,8)
     pass
 
 class Fireball:
@@ -132,7 +132,7 @@ class Fireball:
         self.y += -math.sin(self.angle) * self.dir * game_framework.frame_time
 
         if 1000 < getDistance(self.start,(self.x,self.y)):
-            game_world.remove_object2(self,6)
+            game_world.remove_object2(self,8)
         pass
     def render(self):
         self.image.clip_draw(int(self.frame)*72,0,72,72,self.x,self.y)
@@ -149,5 +149,5 @@ class Fireball:
         return False
 
     def removeBullet(self):
-            game_world.remove_object2(self,6)
+            game_world.remove_object2(self,8)
     pass
