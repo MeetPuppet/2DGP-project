@@ -20,7 +20,7 @@ from Items import Coin
 from Items import PowerUp
 from Items import BoomUp
 
-from boss import Batafire
+from boss import Batafire, kracko
 from minions import Scarfy
 from minions import SirKibble
 from minions import blueClay
@@ -175,7 +175,7 @@ def handle_events():
             game_world.add_object(Batafire(), 5)
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_5:
-            boss1.Kill()
+            game_world.add_object(kracko(), 5)
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_6:
             game_world.add_object(Beat((1024//2, 768//2)), 7)

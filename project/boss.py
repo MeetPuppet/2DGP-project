@@ -6,7 +6,7 @@ import random
 
 
 from UI import bossGause
-from enemyBullets import Fireball
+from enemyBullets import Fireball, enemyBullet
 from minions import miniBata
 
 
@@ -144,7 +144,7 @@ class Batafire:
                 get_time()
 
             if self.y < -150:
-                game_world.remove_object2(self, 2)
+                game_world.remove_object2(self, 5)
 
             pass
         pass
@@ -209,6 +209,160 @@ class Batafire:
     def Kill(self): self.HP = 0
 
 class kracko:
+    image = None
+    EYEimage = None
+    def __init__(self):
+        self.x, self.y = 1500,768//2
+        self.maxHP, self.HP = 500, 500
+        self.radius = 128
+        self.frame = 0
+        self.state = 0
+        self.guarding = 1
+        self.wait = 10
+        self.count = 0
+        self.bulletDir = 100
+        self.speed = RUN_SPEED_PPS*4
+        self.build_behavior_tree()
+        self.gause = None
+        if kracko.image == None:
+            kracko.image = load_image("image/boss/kracko/Kracko_Body.png")
+            kracko.EYEimage =load_image("image/boss/kracko/Kracko_Eye.png")
+        pass
+    def Trace_Player_On_Top(self):
+        kirby= game_world.get_player_layer()[0]
+        targetY = kirby.getPoint()[1]
+
+        if targetY > 512:
+            self.x, self.y = 1224 , 512+128
+            self.wait = 4
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+        pass
+
+    def Trace_Player_On_Middle(self):
+        kirby= game_world.get_player_layer()[0]
+        targetY = kirby.getPoint()[1]
+
+        if targetY > 256:
+            self.x, self.y = 1224 , 256+128
+            self.wait = 4
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+        pass
+
+    def Trace_Player_On_Bottom(self):
+        kirby= game_world.get_player_layer()[0]
+        targetY = kirby.getPoint()[1]
+
+        if targetY > 0:
+            self.x, self.y = 1224 , 0+128
+            self.wait = 4
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+        pass
+
+
+    def Battle_Resting(self):
+            if self.x < 0:
+                pass
+            if self.wait < 0 :
+                return BehaviorTree.SUCCESS
+            return BehaviorTree.FAIL
+            pass
+
+    def Kracko_in_window(self):
+            if self.x < 1024 + 564 and self.y < 768 + 128 and self.x > 0 + 564 and self.y > 0 + 128 :
+                return True
+            return False
+            pass
+
+    def build_behavior_tree(self):
+        battle_rest_node = LeafNode("Battle Resting", self.Battle_Resting)
+        upSide_node = LeafNode("Trace Player On Top", self.Trace_Player_On_Top)
+        midSide_node = LeafNode("Trace Player On Middle", self.Trace_Player_On_Middle)
+        downSide_node = LeafNode("Trace Player On Bottom", self.Trace_Player_On_Bottom)
+
+        rest_node = SequenceNode("rest")
+        rest_node.add_children(battle_rest_node,upSide_node,midSide_node,downSide_node)
+
+        '''
+        charge_upSide_node = SequenceNode("charge upSide")
+        charge_upSide_node.add_child(upSide_node)
+
+        charge_midSide_node = SequenceNode("charge midSide")
+        charge_midSide_node.add_child(midSide_node)
+
+        charge_downSide_node = SequenceNode("charge downSide")
+        charge_downSide_node.add_child(downSide_node)
+        '''
+
+        rest_charge_node = SelectorNode("RestCharge")
+        rest_charge_node.add_child(rest_node)
+        self.bt = BehaviorTree(rest_charge_node)
+        pass
+
+    def update(self):
+        if self.gause == None:
+            self.gause = bossGause(self.maxHP)
+        else:
+            self.gause.update(self.HP)
+
+        if self.HP > 0:
+            self.bt.run()
+
+            self.frame = (self.frame +
+                FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+
+            self.x -= self.speed * game_framework.frame_time
+
+            if self.Kracko_in_window():
+                
+                #self.bulletDir = self.bulletDir - 1
+                #game_world.add_object(enemyBullet((self.x,self.y),(self.x-1,self.y)), 8)
+                #game_world.add_object(enemyBullet((self.x,self.y),(self.x+1,self.y)), 8)
+                #game_world.add_object(enemyBullet((self.x,self.y),(self.x,self.y-self.bulletDir)), 8)
+                #game_world.add_object(enemyBullet((self.x,self.y),(self.x,self.y+self.bulletDir)), 8)
+                if self.bulletDir < -100:
+                    self.bulletDir*=-1
+            else:
+                pass
+
+        else:
+            self.image.opacify(1)
+
+    def render(self):
+        self.gause.render()
+        self.image.clip_draw(int(self.frame) * 376, 0 , 376, 256, self.x, self.y)
+        self.EYEimage.clip_draw(0, 0 , 96, 96, self.x, self.y)
+
+
+    def downHP(self,damage):
+        if self.guarding < 0:
+            self.HP -= damage
+            self.guarding = 10
+        pass
+
+    def getPoint(self): return (self.x, self.y)
+    def getRadius(self): return self.radius
+
+    def getRect(self):
+        return [(self.x-188,self.x+188,self.y-64,self.y+64),
+                (self.x-376,self.x+376,self.y-128,self.y+128)]
+
+    def getState(self): return self.state
+    def getHP(self): return self.HP
+    def getHurt(self, damage):
+        self.HP-= damage
+
+    def isDead(self):
+        if self.HP > 0:
+            return False
+        else:
+            return True
+    def Kill(self): self.HP = 0
     pass
 
 class darkZero:

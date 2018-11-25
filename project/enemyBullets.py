@@ -51,7 +51,6 @@ class enemyBullet:
             enemyBullet.image = load_image("image/minion/bullet.png")
         pass
     def update(self):
-
         self.x += math.cos(self.angle) * self.dir* game_framework.frame_time
 
         self.y += -math.sin(self.angle) * self.dir * game_framework.frame_time
@@ -72,7 +71,7 @@ class enemyBullet:
         if getDistance(self.start,(self.x,self.y)) > 1000:
             return True
         return False
-
+    def setAngle(self, angle): self.angle = angle
     def removeBullet(self):
             game_world.remove_object2(self,8)
 
