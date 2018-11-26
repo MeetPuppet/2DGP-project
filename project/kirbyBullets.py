@@ -2,7 +2,7 @@ from pico2d import *
 import game_world
 import game_framework
 
-from Effect import Beat
+from Effect import Beat, Smoke
 # fill expressions correctly
 PIXEL_PER_METER = (10.0 / 0.3)
 RUN_SPEED_KMPH = 150.0
@@ -109,8 +109,8 @@ class maxBullet:
     def getSize(self): return self.size
     def getDamage(self): return self.damage
     def removeBullet(self):
-        game_world.remove_object2(self, 4)
-        game_world.add_object(Beat((self.x, self.y)), 7)
+        game_world.remove_object2(self, 3)
+        game_world.add_object(Beat((self.x, self.y)), 10)
     pass
 
 class starBullet:

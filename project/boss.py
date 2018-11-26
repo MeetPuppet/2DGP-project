@@ -8,7 +8,7 @@ import random
 from UI import bossGause
 from enemyBullets import Fireball, enemyBullet, getAngle
 from minions import miniBata
-
+from Effect import Smoke
 
 
 # fill expressions correctly
@@ -113,7 +113,7 @@ class Batafire:
             self.count += game_framework.frame_time
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
             if self.count / 0.1 > 1:
-                game_world.add_object(Fireball((self.x-100,self.y-100),(self.x-200,self.y-100+random.randint(-100,100))), 6)
+                game_world.add_object(Fireball((self.x-100,self.y-100),(self.x-200,self.y-100+random.randint(-100,100))), 8)
                 self.count = 0
 
             if self.wait < 0:
@@ -183,11 +183,6 @@ class Batafire:
     def rushing_body(self):
         pass
 
-    def downHP(self,damage):
-        if self.guarding < 0:
-            self.HP -= damage
-            self.guarding = 10
-        pass
 
     def getPoint(self): return (self.x-14, self.y-32)
     def getRadius(self): return self.radius
@@ -213,7 +208,7 @@ class kracko:
     EYEimage = None
     def __init__(self):
         self.x, self.y = 1500,768//2
-        self.maxHP, self.HP = 500, 500
+        self.maxHP, self.HP = 100, 100
         self.radius = 128
         self.frame = 0
         self.state = 0
@@ -347,10 +342,15 @@ class kracko:
                 pass
 
         else:
-            self.image.opacify(random.randint(3,8)/10)
-            #진동
+            self.maxHP-=0.8
+            self.image.opacify(self.maxHP/100)
+            self.EYEimage.opacify(self.maxHP/100)
+            #진동->렌더
             #이팩트
             #시간되면서 소멸
+            self.getHurt(1)
+            if self.maxHP<0:
+                game_world.remove_object2(self, 5)
 
     def render(self):
         kirby = game_world.get_player_layer()[0]
@@ -361,11 +361,6 @@ class kracko:
         draw_rectangle(*(self.getRect()[0][0],self.getRect()[0][2],self.getRect()[0][1],self.getRect()[0][3]))
         draw_rectangle(*(self.getRect()[1][0],self.getRect()[1][2],self.getRect()[1][1],self.getRect()[1][3]))
 
-    def downHP(self,damage):
-        if self.guarding < 0:
-            self.HP -= damage
-            self.guarding = 10
-        pass
 
     def getPoint(self): return (self.x, self.y)
     def getRadius(self): return self.radius
@@ -376,7 +371,10 @@ class kracko:
 
     def getState(self) : return self.state
     def getHP(self) : return self.HP
-    def getHurt(self, damage) : self.HP-= damage
+    def getHurt(self, damage) :
+        self.HP-= damage
+        game_world.add_object(Smoke((self.x+random.randint(-188,188), self.y+random.randint(-128,128))), 10)
+        game_world.add_object(Smoke((self.x+random.randint(-188,188), self.y+random.randint(-128,128))), 10)
 
     def isDead(self):
         if self.HP > 0:
