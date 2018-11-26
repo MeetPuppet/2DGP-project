@@ -55,7 +55,7 @@ class enemyBullet:
 
         self.y += -math.sin(self.angle) * self.dir * game_framework.frame_time
 
-        if 1000 < getDistance(self.start,(self.x,self.y)):
+        if self.x < 0 or self.x>1024:
             game_world.remove_object2(self,8)
         pass
     def render(self):

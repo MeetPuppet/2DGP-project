@@ -6,7 +6,7 @@ import random
 
 
 from UI import bossGause
-from enemyBullets import Fireball, enemyBullet
+from enemyBullets import Fireball, enemyBullet, getAngle
 from minions import miniBata
 
 
@@ -218,10 +218,10 @@ class kracko:
         self.frame = 0
         self.state = 0
         self.guarding = 1
-        self.wait = 10
+        self.wait = 2
         self.count = 0
         self.bulletDir = 100
-        self.speed = RUN_SPEED_PPS*4
+        self.speed = RUN_SPEED_PPS*2
         self.build_behavior_tree()
         self.gause = None
         if kracko.image == None:
@@ -274,7 +274,7 @@ class kracko:
             pass
 
     def Kracko_in_window(self):
-            if self.x < 1024 + 564 and self.y < 768 + 128 and self.x > 0 + 564 and self.y > 0 + 128 :
+            if self.x < 1024 + 564 and self.y < 768 + 128 and self.x > 0 - 564 and self.y > 0 - 128 :
                 return True
             return False
             pass
@@ -311,33 +311,55 @@ class kracko:
             self.gause.update(self.HP)
 
         if self.HP > 0:
-            self.bt.run()
+            #self.bt.run()
+            kirby = game_world.get_player_layer()[0]
+            target = kirby.getPoint()
+
+            if self.wait>0:
+                self.wait-=game_framework.frame_time
+            else:
+                self.x -= self.speed * game_framework.frame_time
+                self.count -= game_framework.frame_time
+                if self.Kracko_in_window():
+                    if self.count < 0:
+                        game_world.add_object(enemyBullet((self.x, self.y), (target[0], target[1] + 100)), 8)
+                        game_world.add_object(enemyBullet((self.x, self.y), (target[0], target[1])), 8)
+                        game_world.add_object(enemyBullet((self.x, self.y), (target[0], target[1] - 100)), 8)
+                        self.count += 0.03
 
             self.frame = (self.frame +
                 FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
 
-            self.x -= self.speed * game_framework.frame_time
+            if self.x<-600:
+                self.wait=1
+                if target[1] > 512:
+                    self.y = 512+128
+                elif target[1] > 256:
+                    self.y = 256+128
+                elif target[1] > 0:
+                    self.y = 0+128
+                self.x = 1500
 
-            if self.Kracko_in_window():
-                
-                #self.bulletDir = self.bulletDir - 1
-                #game_world.add_object(enemyBullet((self.x,self.y),(self.x-1,self.y)), 8)
-                #game_world.add_object(enemyBullet((self.x,self.y),(self.x+1,self.y)), 8)
-                #game_world.add_object(enemyBullet((self.x,self.y),(self.x,self.y-self.bulletDir)), 8)
+
                 #game_world.add_object(enemyBullet((self.x,self.y),(self.x,self.y+self.bulletDir)), 8)
-                if self.bulletDir < -100:
-                    self.bulletDir*=-1
+
             else:
                 pass
 
         else:
-            self.image.opacify(1)
+            self.image.opacify(random.randint(3,8)/10)
+            #진동
+            #이팩트
+            #시간되면서 소멸
 
     def render(self):
+        kirby = game_world.get_player_layer()[0]
+        self.watch = getAngle((self.x,self.y),(kirby.getPoint()[0],kirby.getPoint()[1]))
         self.gause.render()
         self.image.clip_draw(int(self.frame) * 376, 0 , 376, 256, self.x, self.y)
-        self.EYEimage.clip_draw(0, 0 , 96, 96, self.x, self.y)
-
+        self.EYEimage.clip_composite_draw(0, 0 , 96, 96,-self.watch,'', self.x, self.y,96,96)
+        draw_rectangle(*(self.getRect()[0][0],self.getRect()[0][2],self.getRect()[0][1],self.getRect()[0][3]))
+        draw_rectangle(*(self.getRect()[1][0],self.getRect()[1][2],self.getRect()[1][1],self.getRect()[1][3]))
 
     def downHP(self,damage):
         if self.guarding < 0:
@@ -350,12 +372,11 @@ class kracko:
 
     def getRect(self):
         return [(self.x-188,self.x+188,self.y-64,self.y+64),
-                (self.x-376,self.x+376,self.y-128,self.y+128)]
+                (self.x-94,self.x+94,self.y-128,self.y+128)]
 
-    def getState(self): return self.state
-    def getHP(self): return self.HP
-    def getHurt(self, damage):
-        self.HP-= damage
+    def getState(self) : return self.state
+    def getHP(self) : return self.HP
+    def getHurt(self, damage) : self.HP-= damage
 
     def isDead(self):
         if self.HP > 0:
