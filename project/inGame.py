@@ -92,7 +92,7 @@ def enter():
     global player, stage, bullet1, bullet2, bulletMax, star, boom, coins, powerUp, boomUp
     global minion1, minion2, boss1, EBullet, fireball, Cutter, waves, waveCount
     player = Kirby()
-    stage = Stage(0)
+    stage = Stage()
     bullet1 = kirbyBullet1()
     bullet2 = kirbyBullet2()
     bulletMax = maxBullet()
@@ -139,10 +139,10 @@ def resume():
     pass
 
 
-
+num = 0
 
 def handle_events():
-    global waveCount, player
+    global waveCount, player, num
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -156,6 +156,7 @@ def handle_events():
             game_world.add_object(Coin((1024//2, 768//2)), 7)
             game_world.add_object(PowerUp((1024//2, 768//2)), 7)
             game_world.add_object(BoomUp((1024//2, 768//2)), 7)
+            num=0
 
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_2:
@@ -164,12 +165,14 @@ def handle_events():
             game_world.add_object(Scarfy(2), 4)
             game_world.add_object(SirKibble(),4)
             game_world.add_object(blueClay((512, 768)), 4)
+            num = 1
             #player.Hit()
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_3:
             game_world.add_object(Fireball((1024//2, 768//2),player.getPoint()), 5)
             game_world.add_object(enemyBullet((1024//2, 768//2),player.getPoint()), 5)
             game_world.add_object(SirKibbleCutter((1024//2, 768//2)), 5)
+            num = 2
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_4:
             game_world.add_object(Batafire(), 5)
@@ -183,10 +186,12 @@ def handle_events():
 i=0
 
 def update():
-    global playTime, waveCount, i
+    global playTime, waveCount, i, stage
     #game_world.intersectDistance()
     #game_world.intersectRectToRect()
     game_world.CommunicateObjects()
+
+    stage.setStage(num)
     '''
     if waveCount != 6:
         playTime+=1

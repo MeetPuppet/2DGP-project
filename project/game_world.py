@@ -287,3 +287,6 @@ def all_objects():
 
 def get_player_layer():
     return objects[1]
+
+def get_backGound():
+    return objects[0][0]

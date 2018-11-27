@@ -8,35 +8,88 @@ RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 class Stage:
-    def __init__(self, stage):
-        if stage == 0:
-            self.frame1X, self.frame1Y =0,0
-            self.frame2X, self.frame2Y =1024,0
-        elif stage == 1:
-            self.frame1X, self.frame1Y =0,1
-            self.frame2X, self.frame2Y =1024,1
-        else:
-            self.frame1X, self.frame1Y =0,2
-            self.frame2X, self.frame2Y =1024,2
+    def __init__(self):
+        self.frame1X, self.frame1Y =0,0
+        self.frame2X, self.frame2Y =1024,0
+        self.stage=0
+        self.twisted = False
         self.image1 = load_image("image/map.jpg")
         self.image2 = load_image("image/map.jpg")
         pass
     def update(self):
-        moveRange =RUN_SPEED_PPS*game_framework.frame_time
 
-        if self.frame1X < -(1004):
-            self.frame1X = self.frame2X + 1004 - moveRange
-        else:
-            self.frame1X -= moveRange
+        if self.stage ==0:
+            moveRange =RUN_SPEED_PPS*game_framework.frame_time
+            if self.frame1X < -(1024):
+                self.frame1X += 2048 - moveRange
+            else:
+                self.frame1X -= moveRange
 
-        if self.frame2X < -(1004):
-            self.frame2X = self.frame1X + 1004 - moveRange
-        else:
-            self.frame2X -= moveRange
+            if self.frame2X < -(1024):
+                self.frame2X += 2048 - moveRange
+            else:
+                self.frame2X -= moveRange
+        elif self.stage == 1:
+            moveRange =RUN_SPEED_PPS/2*game_framework.frame_time
+            if self.frame1X < -(1024):
+                self.frame1X += 2048 - moveRange
+            else:
+                self.frame1X -= moveRange
+
+            if self.frame2X < -(1024):
+                self.frame2X += 2048 - moveRange
+            else:
+                self.frame2X -= moveRange
+        elif self.stage ==2:
+            moveRange =RUN_SPEED_PPS/2*game_framework.frame_time
+            if self.frame1X < -(1024):
+                self.frame1X += 2048 - moveRange
+            else:
+                self.frame1X -= moveRange
+
+            if self.frame2X < -(1024):
+                self.frame2X += 2048 - moveRange
+            else:
+                self.frame2X -= moveRange
+
+
 
         pass
     def render(self):
-        self.image1.clip_draw(0,self.frame1Y*768,1024,768,self.frame1X+(1024//2),768//2)
-        self.image2.clip_draw(0,self.frame2Y*768,1024,768,self.frame2X+(1024//2),768//2)
+        self.image1.clip_draw(0,self.frame1Y,1024,768,self.frame1X+(1024//2),768//2)
+        self.image2.clip_draw(0,self.frame2Y,1024,768,self.frame2X+(1024//2),768//2)
+
+
+
+    def setStage(self, stage):
+        self.stage=stage
+        if self.stage ==0:
+            if self.frame1Y > 0:
+                self.frame1Y -= 2
+                self.frame2Y -= 2
+            else:
+                self.frame1Y = 0
+                self.frame2Y = 0
+        elif self.stage == 1:
+            if self.frame1Y > 768:
+                self.frame1Y -= 2
+                self.frame2Y -= 2
+            elif self.frame1Y < 768:
+                self.frame1Y += 2
+                self.frame2Y += 2
+            else:
+                self.frame1Y = 768
+                self.frame2Y = 768
+        elif self.stage ==2:
+            if self.frame1Y < 768 * 2+2:
+                self.frame1Y += 2
+                self.frame2Y += 2
+            else:
+                self.frame1Y = 768 * 2+2
+                self.frame2Y = 768 * 2+2
+
+
+    def twistedWorld(self):
+        self.twisted = True
         pass
     pass

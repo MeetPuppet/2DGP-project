@@ -280,14 +280,12 @@ class ReadyState:
         elif Kirby.chargeCount >= 3:
             Kirby.frameY = 2
 
+        Kirby.x = Kirby.x + game_framework.frame_time * Kirby.dirX
         if Kirby.x > 1024 - 24 or Kirby.x < 0 + 24:
             Kirby.x = Kirby.x - game_framework.frame_time * Kirby.dirX
-        else:
-            Kirby.x = Kirby.x + game_framework.frame_time * Kirby.dirX
+        Kirby.y = Kirby.y + game_framework.frame_time * Kirby.dirY
         if Kirby.y > 768 - 24 or Kirby.y < 0 + 24:
             Kirby.y = Kirby.y - game_framework.frame_time * Kirby.dirY
-        else:
-            Kirby.y = Kirby.y + game_framework.frame_time * Kirby.dirY
         # fill here
 
     @staticmethod
@@ -341,6 +339,7 @@ class ShotState:
         Kirby.frameX = (Kirby.frameX + Kirby.FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         if int(Kirby.frameX) == 7:
              Kirby.add_event(BE_IDLE)
+
 
         Kirby.x = Kirby.x + game_framework.frame_time * Kirby.dirX
         if Kirby.x > 1024 - 24 or Kirby.x < 0 + 24:
@@ -400,7 +399,7 @@ next_state_table = {
 
     ShotState: {UP_KEY_DOWN: ShotState, UP_KEY_UP: ShotState, DOWN_KEY_DOWN: ShotState, DOWN_KEY_UP: ShotState,
                     LEFT_KEY_DOWN: ShotState, LEFT_KEY_UP: ShotState,RIGHT_KEY_DOWN: ShotState, RIGHT_KEY_UP: ShotState,
-                    Z_KEY_DOWN: ShotState, Z_KEY_UP: ShotState, X_KEY_DOWN: ShotState, BE_IDLE: IdleState,DEAD: DeadState},
+                    Z_KEY_DOWN: ShotState, Z_KEY_UP: IdleState, X_KEY_DOWN: ShotState, BE_IDLE: IdleState,DEAD: DeadState},
 
     DeadState: {UP_KEY_DOWN: DeadState, UP_KEY_UP: DeadState, DOWN_KEY_DOWN: DeadState, DOWN_KEY_UP: DeadState,
                 LEFT_KEY_DOWN: DeadState, LEFT_KEY_UP: DeadState,RIGHT_KEY_DOWN: DeadState, RIGHT_KEY_UP: DeadState,

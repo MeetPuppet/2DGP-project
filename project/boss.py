@@ -31,7 +31,7 @@ class Batafire:
     DEAD = None
     def __init__(self):
         self.x, self.y = 1500,768//2
-        self.maxHP, self.HP = 500, 500
+        self.maxHP, self.HP = 200, 200
         self.radius = 90
         self.frame = 0
         self.state = 0
@@ -208,7 +208,7 @@ class kracko:
     EYEimage = None
     def __init__(self):
         self.x, self.y = 1500,768//2
-        self.maxHP, self.HP = 100, 100
+        self.maxHP, self.HP = 60, 60
         self.radius = 128
         self.frame = 0
         self.state = 0
@@ -217,7 +217,7 @@ class kracko:
         self.count = 0
         self.bulletDir = 100
         self.speed = RUN_SPEED_PPS*2
-        self.build_behavior_tree()
+        #self.build_behavior_tree()
         self.gause = None
         if kracko.image == None:
             kracko.image = load_image("image/boss/kracko/Kracko_Body.png")
