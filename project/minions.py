@@ -176,12 +176,12 @@ class miniBata:
 
 class blueClay:
     image =None
-    def __init__(self,point):
+    def __init__(self):
         self.downSpeed = RUN_SPEED_KMPH
         self.radius = 30
         self.isDead = False
         self.frame = 0
-        self.x, self.y = point[0], point[1]
+        self.x, self.y = random.randint(100,900), 768+20
 
         if blueClay.image == None:
             blueClay.image = load_image("image/minion/blueClay.png")
@@ -218,24 +218,39 @@ class blueClay:
 
 class sunny:
     image =None
-    def __init__(self,point):
-        self.radius = 30
+    def __init__(self):
+        self.HP = 5
+        self.radius = 45
         self.isDead = False
+        self.moveSpeed = RUN_SPEED_KMPH*3
         self.frame = 0
-        self.x, self.y = point[0], point[1]
+        self.shotTime = 0.1
+        self.x, self.y = 1074, random.randint(100,700)
 
-        if miniBata.image == None:
-            miniBata.image = load_image("image/minion/minibata.png")
+        if sunny.image == None:
+            sunny.image = load_image("image/minion/sunny.png")
             pass
         pass
     def update(self):
-        self.x -= (RUN_SPEED_PPS*2 * game_framework.frame_time)
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
+        if self.moveSpeed < 0:
+            self.moveSpeed += RUN_SPEED_KMPH*3
+
+        self.moveSpeed -= RUN_SPEED_KMPH * game_framework.frame_time
+        self.x -= (self.moveSpeed * game_framework.frame_time)
+
+        if self.shotTime < 0 :
+            kirby = game_world.get_player_layer()[0]
+            game_world.add_object(enemyBullet((self.x,self.y),kirby.getPoint()), 8)
+            self.shotTime += 0.5
+        else:
+            self.shotTime -= game_framework.frame_time
+
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 5
         if self.x < -100 or self.isDead:
             game_world.remove_object2(self, 4)
         pass
     def render(self):
-        self.image.clip_draw(int(self.frame)*160,0,160,168,self.x,self.y)
+        self.image.clip_draw(int(self.frame)*93,0,93,87,self.x,self.y)
         pass
     pass
 
@@ -243,10 +258,13 @@ class sunny:
     def getPoint(self): return (self.x, self.y)
 
     def getRect(self):
-        return [(self.x-35,self.x+35,self.y-17,self.y+17),
-                (self.x - 17, self.x + 17, self.y - 35, self.y + 35)]
+        return [(self.x-45,self.x+45,self.y-45,self.y+45),
+                (self.x - 45, self.x + 45, self.y - 45, self.y + 45)]
 
-    def getHurt(self,n): self.isDead = True
+    def getHurt(self,n):
+        self.HP -= n
+        if self.HP == 0:
+            self.isDead = True
     def getFrame(self): return self.frame
 
     def isDead(self): return self.isDead

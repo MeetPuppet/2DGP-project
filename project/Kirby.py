@@ -388,8 +388,8 @@ next_state_table = {
                 LEFT_KEY_DOWN: MoveState, LEFT_KEY_UP: IdleState,RIGHT_KEY_DOWN: MoveState, RIGHT_KEY_UP: IdleState,
                 Z_KEY_DOWN: IdleState,Z_KEY_UP: IdleState,X_KEY_DOWN: IdleState, CHARGE: ReadyState,DEAD: DeadState},
 
-    MoveState: {UP_KEY_DOWN: IdleState, UP_KEY_UP: IdleState, DOWN_KEY_DOWN: IdleState, DOWN_KEY_UP: IdleState,
-                LEFT_KEY_DOWN: IdleState, LEFT_KEY_UP: IdleState, RIGHT_KEY_DOWN: IdleState, RIGHT_KEY_UP: IdleState,
+    MoveState: {UP_KEY_DOWN: MoveState, UP_KEY_UP: IdleState, DOWN_KEY_DOWN: MoveState, DOWN_KEY_UP: IdleState,
+                LEFT_KEY_DOWN: MoveState, LEFT_KEY_UP: IdleState, RIGHT_KEY_DOWN: MoveState, RIGHT_KEY_UP: IdleState,
                 Z_KEY_DOWN: MoveState, Z_KEY_UP: MoveState, X_KEY_DOWN: MoveState, CHARGE: ReadyState,DEAD: DeadState},
 
     ReadyState: {UP_KEY_DOWN: ReadyState, UP_KEY_UP: ReadyState, DOWN_KEY_DOWN: ReadyState, DOWN_KEY_UP: ReadyState,
@@ -462,6 +462,10 @@ class Kirby:
 
         if self.HP == 5 and self.life == 2:
             self.scoreBoard.upScore(game_framework.frame_time*20)
+
+        if self.HP==1:
+            self.grog = True
+
         if self.grog == True:
             self.scoreBoard.upScore(game_framework.frame_time*20)
 

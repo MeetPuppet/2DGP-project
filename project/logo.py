@@ -27,12 +27,13 @@ def update():
     logo_time += game_framework.frame_time
     if logo_time < 1:
         if alpha < 1:
-            alpha += 0.01
+            alpha += game_framework.frame_time/2
+            front.opacify(alpha)
         else:
-            front.opacify(1)
+            pass
     elif logo_time > 2:
-        alpha -= 0.01
         if alpha > 0:
+            alpha -= game_framework.frame_time/2
             front.opacify(alpha)
         else:
             front.opacify(0)

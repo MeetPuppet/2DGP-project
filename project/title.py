@@ -3,10 +3,13 @@ from pico2d import *
 import inGame
 import game_framework
 
+import game_world
+from backGround import Stage
 
 name = "title"
 front = None
-scene = 0
+scene = -1
+image0 = None
 image1 = None
 image2 = None
 image3 = None
@@ -17,6 +20,8 @@ alpha = 1
 
 def enter():
     global image1,image2,image3, front, anyKey
+    image0 = Stage()
+    game_world.add_object(image0, 0)
     front = load_image('image/black_screen.png')
     image1 = load_image('image/title1.jpg')
     image2 = load_image('image/title2.jpg')
@@ -25,7 +30,8 @@ def enter():
 
 
 def exit():
-    global image1, image2, image3, front
+    global image0, image1, image2, image3, front
+    game_world.remove_object2(image0,0)
     del(image1)
     del(image2)
     del(image3)
@@ -33,13 +39,15 @@ def exit():
 
 def update():
     global front, title_time, alpha, button
+    for game_object in game_world.all_objects():
+        game_object.update()
     delay(0.1)
     if alpha > 0:
         alpha -= game_framework.frame_time
     else:
         alpha = 0
 
-    if scene ==0:
+    if scene ==-1:
         if button == True:
             button = False
         else:
@@ -68,8 +76,11 @@ def handle_events():
 
 def draw():
     clear_canvas()
-
-    if scene == 0:
+    for game_object in game_world.all_objects():
+        game_object.render()
+    if scene == -1:
+        pass
+    elif scene == 0:
         image1.draw(1024//2,768//2)
     elif scene == 1:
         image2.draw(1024//2,768//2)

@@ -20,16 +20,15 @@ from Items import Coin
 from Items import PowerUp
 from Items import BoomUp
 
-from boss import Batafire, kracko
+from boss import Batafire, kracko, darkZero
 from minions import Scarfy
 from minions import SirKibble
 from minions import blueClay
+from minions import sunny
 
-from enemyBullets import enemyBullet
-from enemyBullets import Fireball
-from enemyBullets import SirKibbleCutter
+from enemyBullets import enemyBullet,Fireball,SirKibbleCutter, DarkStar, SuddenSpark ,FireWall
 
-from Effect import Beat
+from Effect import Beat, readyBurn
 
 #phase Range
 ONE, TWO, THREE, BOSS = range(4)
@@ -71,6 +70,8 @@ boss1 = None
 EBullet = None
 fireball = None
 Cutter = None
+fireWall = None
+spark =None
 
 waves = [[],[],[],[],[],[]]
 waveCount=0
@@ -89,7 +90,7 @@ class UI:#maybe unused
 
 
 def enter():
-    global player, stage, bullet1, bullet2, bulletMax, star, boom, coins, powerUp, boomUp
+    global player, stage, bullet1, bullet2, bulletMax, star, boom, coins, powerUp, boomUp, fireWall, spark
     global minion1, minion2, boss1, EBullet, fireball, Cutter, waves, waveCount
     player = Kirby()
     stage = Stage()
@@ -98,6 +99,8 @@ def enter():
     bulletMax = maxBullet()
     star = starBullet()
     boom = kirbyBoom()
+    fireWall = FireWall((0,0))
+    spark =SuddenSpark(0)
 
     coins = Coin()
     powerUp = PowerUp((1024//2, 768//2))
@@ -153,6 +156,7 @@ def handle_events():
             player.handle_event(event)
 
         if event.type == SDL_KEYDOWN and event.key == SDLK_1:
+            game_world.add_object(readyBurn(), 10)
             game_world.add_object(Coin((1024//2, 768//2)), 7)
             game_world.add_object(PowerUp((1024//2, 768//2)), 7)
             game_world.add_object(BoomUp((1024//2, 768//2)), 7)
@@ -164,24 +168,28 @@ def handle_events():
             game_world.add_object(Scarfy(1), 4)
             game_world.add_object(Scarfy(2), 4)
             game_world.add_object(SirKibble(),4)
-            game_world.add_object(blueClay((512, 768)), 4)
+            game_world.add_object(blueClay(), 4)
+            game_world.add_object(sunny(), 4)
             num = 1
             #player.Hit()
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_3:
-            game_world.add_object(Fireball((1024//2, 768//2),player.getPoint()), 5)
-            game_world.add_object(enemyBullet((1024//2, 768//2),player.getPoint()), 5)
-            game_world.add_object(SirKibbleCutter((1024//2, 768//2)), 5)
+            game_world.add_object(Fireball((1024//2, 768//2),player.getPoint()), 8)
+            game_world.add_object(enemyBullet((1024//2, 768//2),player.getPoint()), 8)
+            game_world.add_object(SirKibbleCutter((1024//2, 768//2)), 8)
+            game_world.add_object(DarkStar(), 8)
             num = 2
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_4:
-            game_world.add_object(Batafire(), 5)
+            game_world.add_object(boss1, 5)
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_5:
             game_world.add_object(kracko(), 5)
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_6:
-            game_world.add_object(Beat((1024//2, 768//2)), 7)
+            game_world.add_object(darkZero(), 5)
+            #boss1.Kill()
+
 
 i=0
 

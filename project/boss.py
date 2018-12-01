@@ -6,9 +6,9 @@ import random
 
 
 from UI import bossGause
-from enemyBullets import Fireball, enemyBullet, getAngle
+from enemyBullets import Fireball, enemyBullet, getAngle, DarkStar
 from minions import miniBata
-from Effect import Smoke
+from Effect import Beat,Smoke, chargeSpark, readyBurn
 
 
 # fill expressions correctly
@@ -31,7 +31,7 @@ class Batafire:
     DEAD = None
     def __init__(self):
         self.x, self.y = 1500,768//2
-        self.maxHP, self.HP = 200, 200
+        self.maxHP, self.HP = 100, 100
         self.radius = 90
         self.frame = 0
         self.state = 0
@@ -63,6 +63,9 @@ class Batafire:
 
         if self.HP <= 0: self.state = 4
 
+        kirby= game_world.get_player_layer()[0]
+        target = kirby.getPoint()
+
         if self.state == 0:
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 10
 
@@ -70,25 +73,15 @@ class Batafire:
                 self.x+=RUN_SPEED_PPS*game_framework.frame_time
             else:
                 self.x-=RUN_SPEED_PPS*game_framework.frame_time
-            if self.x > 974:
-                if self.UpMove == True:
-                    self.y+=RUN_SPEED_PPS*game_framework.frame_time
-                else:
-                    self.y-=RUN_SPEED_PPS*game_framework.frame_time
+            if target[1] > self.y+20:
+                self.y+=RUN_SPEED_PPS*game_framework.frame_time/2
+            elif target[1] < self.y-20:
+                self.y-=RUN_SPEED_PPS*game_framework.frame_time/2
 
             if self.x < 612:
                 self.backMove = True
-                pass
             elif self.x > 974:
                 self.backMove = False
-                pass
-            if self.y > 718:
-                self.UpMove = False
-                pass
-            elif self.y < 100:
-                self.UpMove = True
-                pass
-
 
             self.wait -= game_framework.frame_time
             if self.wait < 0:
@@ -100,7 +93,7 @@ class Batafire:
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
             if int(self.frame) == 3:
                 for i in range(3): game_world.add_object(miniBata((1300,random.randint(100,668))),2)
-                if random.randint(0,1) == 0:
+                if target[0] < 200:
                     self.state = 2
                     self.wait = 3
                 else:
@@ -165,12 +158,16 @@ class Batafire:
         if self.state == 4:
             self.DEAD.clip_draw(int(self.frame) * 428, 0 , 428, 448, self.x, self.y)
             pass
+        #draw_rectangle(*(self.getRect()[0][0], self.getRect()[0][2], self.getRect()[0][1], self.getRect()[0][3]))
+        #draw_rectangle(*(self.getRect()[1][0], self.getRect()[1][2], self.getRect()[1][1], self.getRect()[1][3]))
+
         pass
     pass
 
     def trace_player(self):
         kirby= game_world.get_player_layer()
         targetY = kirby.getPoint()[1]
+
 
         if targetY > self.y+10:
             self.y += RUN_SPEED_PPS * game_framework.frame_time
@@ -184,23 +181,30 @@ class Batafire:
         pass
 
 
-    def getPoint(self): return (self.x-14, self.y-32)
+    def getPoint(self): return (self.x-10, self.y-60)
     def getRadius(self): return self.radius
 
     def getRect(self):
-        return [(self.x-14-75,self.x-14+75,self.y-32-37,self.y-32+37),
-                (self.x-14-37,self.x-14+37,self.y-32-80,self.y-32+70)]
+        return [(self.x-10-80,self.x-10+80,self.y-40-60,self.y+40-60),
+                (self.x-10-30,self.x-10+30,self.y-80-60,self.y+80-60)]
 
     def getState(self): return self.state
     def getHP(self): return self.HP
     def getHurt(self, damage):
         self.HP-= damage
+        kirby= game_world.get_player_layer()[0]
+        target = kirby.getPoint()
+        explo = random.randint(0,2)
+        if explo == 0:
+            game_world.add_object(Fireball((self.x - 100, self.y - 100), target), 8)
+
 
     def isDead(self):
         if self.HP > 0:
             return False
         else:
             return True
+
     def Kill(self): self.HP = 0
 
 class kracko:
@@ -215,7 +219,9 @@ class kracko:
         self.guarding = 1
         self.wait = 2
         self.count = 0
+        self.attackMode = 0
         self.bulletDir = 100
+        self.wayRight = False
         self.speed = RUN_SPEED_PPS*2
         #self.build_behavior_tree()
         self.gause = None
@@ -313,19 +319,24 @@ class kracko:
             if self.wait>0:
                 self.wait-=game_framework.frame_time
             else:
-                self.x -= self.speed * game_framework.frame_time
+                if self.wayRight == False:
+                    self.x -= self.speed * game_framework.frame_time
+                else:
+                    self.x += self.speed * game_framework.frame_time
+
                 self.count -= game_framework.frame_time
                 if self.Kracko_in_window():
                     if self.count < 0:
-                        game_world.add_object(enemyBullet((self.x, self.y), (target[0], target[1] + 100)), 8)
-                        game_world.add_object(enemyBullet((self.x, self.y), (target[0], target[1])), 8)
-                        game_world.add_object(enemyBullet((self.x, self.y), (target[0], target[1] - 100)), 8)
-                        self.count += 0.03
+                        if self.attackMode == 0:
+                            game_world.add_object(enemyBullet((self.x, self.y), (target[0], target[1] + 100)), 8)
+                            game_world.add_object(enemyBullet((self.x, self.y), (target[0], target[1])), 8)
+                            game_world.add_object(enemyBullet((self.x, self.y), (target[0], target[1] - 100)), 8)
+                        self.count += 0.4
 
             self.frame = (self.frame +
                 FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
 
-            if self.x<-600:
+            if self.x<-600 and self.wayRight == False:
                 self.wait=1
                 if target[1] > 512:
                     self.y = 512+128
@@ -333,14 +344,19 @@ class kracko:
                     self.y = 256+128
                 elif target[1] > 0:
                     self.y = 0+128
-                self.x = 1500
+                self.wayRight = True
+                self.makeSpark()
 
-
-                #game_world.add_object(enemyBullet((self.x,self.y),(self.x,self.y+self.bulletDir)), 8)
-
-            else:
-                pass
-
+            elif self.x > 1024+600 and self.wayRight == True:
+                self.wait=1
+                if target[1] > 512:
+                    self.y = 512+128
+                elif target[1] > 256:
+                    self.y = 256+128
+                elif target[1] > 0:
+                    self.y = 0+128
+                self.wayRight = False
+                self.makeSpark()
         else:
             self.maxHP-=0.8
             self.image.opacify(self.maxHP/100)
@@ -369,11 +385,22 @@ class kracko:
         return [(self.x-188,self.x+188,self.y-64,self.y+64),
                 (self.x-94,self.x+94,self.y-128,self.y+128)]
 
+
+    def makeSpark(self):
+        kirby = game_world.get_player_layer()[0]
+        target = kirby.getPoint()
+        game_world.add_object(chargeSpark(target), 10)
+        game_world.add_object(chargeSpark((random.randint(100,900),random.randint(50,700))), 10)
+        game_world.add_object(chargeSpark((random.randint(100,900),random.randint(50,700))), 10)
+        game_world.add_object(chargeSpark((random.randint(100,900),random.randint(50,700))), 10)
+        game_world.add_object(chargeSpark((random.randint(100,900),random.randint(50,700))), 10)
+
     def getState(self) : return self.state
-    def getHP(self) : return self.HP
+    def getHP(self) :
+        HP = self.HP
+        return HP
     def getHurt(self, damage) :
         self.HP-= damage
-        game_world.add_object(Smoke((self.x+random.randint(-188,188), self.y+random.randint(-128,128))), 10)
         game_world.add_object(Smoke((self.x+random.randint(-188,188), self.y+random.randint(-128,128))), 10)
 
     def isDead(self):
@@ -385,4 +412,109 @@ class kracko:
     pass
 
 class darkZero:
+    bodyImage = None
+    eyeImage = None
+    def __init__(self):
+        self.x, self.y = 1024+500,768//2
+        self.maxHP, self.HP = 200, 200
+        self.radius = 300
+        self.frame = 0
+        self.eyeFrame = 0
+        self.intro = True
+        self.wait = 3
+        self.count = 1
+        self.speed = RUN_SPEED_PPS/2
+        self.gause = None
+        #실행초에 어딘가 이미지를 로드해놓고 교체하는 방식이라면
+        if darkZero.bodyImage == None:
+            darkZero.bodyImage = load_image("image/boss/darkZero/darkZero_body.png")
+            darkZero.eyeImage = load_image("image/boss/darkZero/darkZero_eye.png")
+
+        pass
+    def update(self):
+        if self.gause == None:
+            self.gause = bossGause(self.maxHP)
+        else:
+            self.gause.update(self.HP)
+
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+
+        if self.intro == True:
+            self.x -= self.speed * game_framework.frame_time
+            if self.x < 1024:
+                self.eyeFrame = (self.eyeFrame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+                if int(self.eyeFrame) == 18:
+                    self.intro = False
+        else:
+            if self.HP > 0:
+                self.count -= game_framework.frame_time
+                self.wait -= game_framework.frame_time
+                if self.count < 0:
+                    game_world.add_object(DarkStar(), 8)
+                    self.count += 1
+                if self.wait < 0:
+                    self.wait += 4
+                    if random.randint(0,1) == 0:
+                        self.makeSpark()
+                    else:
+                        self.makeFireWall()
+            else:
+                self.maxHP-=0.8
+                self.bodyImage.opacify(self.maxHP/100)
+                self.eyeImage.opacify(self.maxHP/100)
+                game_world.add_object(Beat((self.x+random.randint(-350,350), self.y+random.randint(-350,350))), 10)
+                game_world.add_object(Smoke((self.x+random.randint(-350,350), self.y+random.randint(-350,350))), 10)
+
+                if self.maxHP<0:
+                    game_world.remove_object2(self, 5)
+
+
+            pass
+
+
+            pass
+        pass
+    def render(self):
+        self.gause.render()
+        self.bodyImage.clip_draw(int(self.frame) * 585, 0 , 585, 702, self.x, self.y)
+        self.eyeImage.clip_draw(int(self.eyeFrame) * 225, 0 , 225, 225, self.x-30, self.y-80)
+        draw_rectangle(*(self.getRect()[0][0],self.getRect()[0][2],self.getRect()[0][1],self.getRect()[0][3]))
+        draw_rectangle(*(self.getRect()[1][0],self.getRect()[1][2],self.getRect()[1][1],self.getRect()[1][3]))
+
+
+        pass
+    pass
+
+    def makeSpark(self):
+        kirby = game_world.get_player_layer()[0]
+        target = kirby.getPoint()
+        game_world.add_object(chargeSpark(target), 10)
+        game_world.add_object(chargeSpark((random.randint(100,900),random.randint(50,700))), 10)
+        game_world.add_object(chargeSpark((random.randint(100,900),random.randint(50,700))), 10)
+        game_world.add_object(chargeSpark((random.randint(100,900),random.randint(50,700))), 10)
+        game_world.add_object(chargeSpark((random.randint(100,900),random.randint(50,700))), 10)
+
+    def makeFireWall(self):
+        game_world.add_object(readyBurn(), 10)
+
+
+
+    def getPoint(self): return (self.x, self.y-80)
+    def getRadius(self): return self.radius
+
+    def getRect(self):
+        return [(self.x-243,self.x+243,self.y-80-150,self.y-80+150),
+                (self.x-150,self.x+150,self.y-80-300,self.y-80+300)]
+
+    def getHP(self): return self.HP
+    def getHurt(self, damage):
+        self.HP-= damage
+
+
+    def isDead(self):
+        if self.HP > 0:
+            return False
+        else:
+            return True
+    def Kill(self): self.HP = 0
     pass
