@@ -427,10 +427,10 @@ class Kirby:
         self.supCount = 0
 
         self.maxHP = 5
-        self.HP = 0
+        self.HP = 5
         self.HPUI = kirbyHPUI(self.HP)
 
-        self.life = 0
+        self.life = life
         self.lifeUI = kirbyLifeUI(self.life)
 
         self.FRAMES_PER_ACTION = 8
@@ -493,10 +493,10 @@ class Kirby:
         if self.HP > self.maxHP:
             self.HP = self.maxHP
 
-
-        for i in range(self.supCount):
-            for shoot in self.support:
-                shoot.update((self.x-70,self.y+(70-(i*70))))
+        i=0
+        for shoot in self.support:
+            shoot.update((self.x-70,self.y+(70-(i*140))))
+            i+=1
 
         if self.HP <= 0 and self.life <= 0:
             score = self.scoreBoard.getScore()
@@ -536,6 +536,8 @@ class Kirby:
         # fill here
         bullet = kirbyBullet1((self.x, self.y))
         game_world.add_object(bullet,3)
+        for shoot in self.support:
+            shoot.fireBullet()
         pass
 
     def Bullet2(self):
@@ -554,6 +556,8 @@ class Kirby:
         # fill here
         bullet = starBullet((self.x, self.y))
         game_world.add_object(bullet,3)
+        for shoot in self.support:
+            shoot.fireBullet()
         pass
 
     def Boom(self):
@@ -594,7 +598,7 @@ class Kirby:
 
     def summonShooter(self):
         if self.supCount < 2:
-            self.support += Shooter((self.x,self.y))
+            self.support += [Shooter((self.x,self.y))]
             self.supCount+=1
         else:
             self.scoreBoard.upScore(1000)
