@@ -1,11 +1,15 @@
 from pico2d import *
 import random
+import rankTable
+import json
 
 from kirbyBullets import kirbyBullet1
 from kirbyBullets import kirbyBullet2
 from kirbyBullets import maxBullet
 from kirbyBullets import starBullet
 from kirbyBullets import kirbyBoom
+
+from supporter import Shooter
 
 from UI import kirbyHPUI
 from UI import kirbyLifeUI
@@ -419,11 +423,14 @@ class Kirby:
         self.isEvent = True
         self.grog = False
 
+        self.support = []
+        self.supCount = 0
+
         self.maxHP = 5
-        self.HP = 5
+        self.HP = 0
         self.HPUI = kirbyHPUI(self.HP)
 
-        self.life = life
+        self.life = 0
         self.lifeUI = kirbyLifeUI(self.life)
 
         self.FRAMES_PER_ACTION = 8
@@ -487,6 +494,30 @@ class Kirby:
             self.HP = self.maxHP
 
 
+        for i in range(self.supCount):
+            for shoot in self.support:
+                shoot.update((self.x-70,self.y+(70-(i*70))))
+
+        if self.HP <= 0 and self.life <= 0:
+            score = self.scoreBoard.getScore()
+            try:
+                with open('data.json', 'r') as f:
+                    data_list = json.load(f)
+                for j in range(4):
+                    for i in range(4):
+                        if data_list[i]["score"] <= score:
+                            data_list[i]["score"], score = score, data_list[i]["score"]
+                f.close()
+            except:
+                data_list = [{"rank": 1, "score": 1000000},{"rank": 2, "score": 50000},{"rank": 3, "score": 30000},{"rank": 4, "score": 10000},{"rank": 5, "score": 5000}]
+                for j in range(4):
+                    for i in range(4):
+                        if data_list[i]["score"] <= score:
+                            data_list[i]["score"], score = score, data_list[i]["score"]
+            with open('data.json', 'w') as f:
+                json.dump(data_list, f)
+
+            game_framework.change_state(rankTable)
 
     def render(self):
         self.cur_state.draw(self)
@@ -494,6 +525,8 @@ class Kirby:
         self.lifeUI.render()
         self.boomUI.render()
         self.scoreBoard.render()
+        for shoot in self.support:
+            shoot.render()
         #pass
 
     def add_event(self, event):
@@ -558,5 +591,12 @@ class Kirby:
 
     def onGrog(self): self.grog = True
     def offGrog(self): self.grog = False
+
+    def summonShooter(self):
+        if self.supCount < 2:
+            self.support += Shooter((self.x,self.y))
+            self.supCount+=1
+        else:
+            self.scoreBoard.upScore(1000)
 
     pass

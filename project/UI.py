@@ -145,7 +145,10 @@ class ScoreBoard():
             block[0].render((self.stratPoint[0]-block[1]*24,self.stratPoint[1]))
         pass
 
+    def getScore(self): return self.score
     def upScore(self,plus=100): self.score += plus
+    def makeRankTable(self):
+        pass
     pass
 
 class bossGause:

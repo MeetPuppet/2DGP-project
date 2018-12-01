@@ -76,17 +76,6 @@ spark =None
 waves = [[],[],[],[],[],[]]
 waveCount=0
 
-class UI:#maybe unused
-
-    def __init__(self, inGame, type):
-
-        pass
-    def update(self):
-        pass
-    def render(self):
-        self.a=0
-    pass
-
 
 
 def enter():
@@ -100,7 +89,7 @@ def enter():
     star = starBullet()
     boom = kirbyBoom()
     fireWall = FireWall((0,0))
-    spark =SuddenSpark(0)
+    spark =SuddenSpark((0,0))
 
     coins = Coin()
     powerUp = PowerUp((1024//2, 768//2))
