@@ -3,6 +3,7 @@ import game_world
 import game_framework
 from BehaviorTree import BehaviorTree, SelectorNode, SequenceNode, LeafNode
 import random
+import rankTable
 
 
 from UI import bossGause
@@ -29,7 +30,10 @@ class Batafire:
     FIRE = None
     CHARGE = None
     DEAD = None
+    fireSound = None
     def __init__(self):
+        if Batafire.fireSound == None:
+            Batafire.fireSound = load_wav('sound/bataFire/song586.wav')
         self.x, self.y = 1500,768//2
         self.maxHP, self.HP = 100, 100
         self.radius = 90
@@ -42,7 +46,6 @@ class Batafire:
         self.count = 0
         self.falling = RUN_SPEED_PPS
         self.gause = None
-        #실행초에 어딘가 이미지를 로드해놓고 교체하는 방식이라면
         if Batafire.IDLE == None:
             Batafire.IDLE = load_image("image/boss/batafireIDLE.png")
         if Batafire.READY == None:
@@ -106,6 +109,7 @@ class Batafire:
             self.count += game_framework.frame_time
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
             if self.count / 0.1 > 1:
+                Batafire.fireSound.play()
                 game_world.add_object(Fireball((self.x-100,self.y-100),(self.x-200,self.y-100+random.randint(-100,100))), 8)
                 self.count = 0
 
@@ -137,7 +141,7 @@ class Batafire:
                 get_time()
 
             if self.y < -150:
-                game_world.remove_object2(self, 5)
+                game_world.remove_object2(self,5)
 
             pass
         pass
@@ -194,7 +198,7 @@ class Batafire:
         self.HP-= damage
         kirby= game_world.get_player_layer()[0]
         target = kirby.getPoint()
-        explo = random.randint(0,2)
+        explo = random.randint(0,10)
         if explo == 0:
             game_world.add_object(Fireball((self.x - 100, self.y - 100), target), 8)
 
@@ -361,12 +365,9 @@ class kracko:
             self.maxHP-=0.8
             self.image.opacify(self.maxHP/100)
             self.EYEimage.opacify(self.maxHP/100)
-            #진동->렌더
-            #이팩트
-            #시간되면서 소멸
             self.getHurt(1)
             if self.maxHP<0:
-                game_world.remove_object2(self, 5)
+                    game_world.remove_object2(self,5)
 
     def render(self):
         kirby = game_world.get_player_layer()[0]
@@ -414,7 +415,11 @@ class kracko:
 class darkZero:
     bodyImage = None
     eyeImage = None
+    sound = None
     def __init__(self):
+        if darkZero.sound == None:
+            darkZero.sound = load_wav("sound/darkZero/summoning.wav")
+        self.sound.set_volume(64)
         self.x, self.y = 1024+500,768//2
         self.maxHP, self.HP = 200, 200
         self.radius = 300
@@ -425,7 +430,6 @@ class darkZero:
         self.count = 1
         self.speed = RUN_SPEED_PPS/2
         self.gause = None
-        #실행초에 어딘가 이미지를 로드해놓고 교체하는 방식이라면
         if darkZero.bodyImage == None:
             darkZero.bodyImage = load_image("image/boss/darkZero/darkZero_body.png")
             darkZero.eyeImage = load_image("image/boss/darkZero/darkZero_eye.png")
@@ -443,6 +447,7 @@ class darkZero:
             self.x -= self.speed * game_framework.frame_time
             if self.x < 1024:
                 self.eyeFrame = (self.eyeFrame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+                if int(self.eyeFrame)==1:self.sound.play()
                 if int(self.eyeFrame) == 18:
                     self.intro = False
         else:
@@ -459,14 +464,34 @@ class darkZero:
                     else:
                         self.makeFireWall()
             else:
-                self.maxHP-=0.8
-                self.bodyImage.opacify(self.maxHP/100)
-                self.eyeImage.opacify(self.maxHP/100)
+                self.maxHP-=1
+                self.bodyImage.opacify(self.maxHP/200)
+                self.eyeImage.opacify(self.maxHP/200)
                 game_world.add_object(Beat((self.x+random.randint(-350,350), self.y+random.randint(-350,350))), 10)
                 game_world.add_object(Smoke((self.x+random.randint(-350,350), self.y+random.randint(-350,350))), 10)
+                if self.maxHP<=0:
+                    game_world.remove_object2(self,5)
+                    score = int(game_world.get_player_layer()[0].getScore())
+                    try:
+                        with open('data.json', 'r') as f:
+                            data_list = json.load(f)
+                        for j in range(5):
+                            for i in range(5):
+                                if data_list[i]["score"] <= score:
+                                    data_list[i]["score"], score = score, data_list[i]["score"]
+                        f.close()
+                    except:
+                        data_list = [{"rank": 1, "score": 1000000}, {"rank": 2, "score": 50000},
+                                     {"rank": 3, "score": 30000}, {"rank": 4, "score": 10000},
+                                     {"rank": 5, "score": 5000}]
+                        for j in range(5):
+                            for i in range(5):
+                                if data_list[i]["score"] <= score:
+                                    data_list[i]["score"], score = score, data_list[i]["score"]
+                    with open('data.json', 'w') as f:
+                        json.dump(data_list, f)
 
-                if self.maxHP<0:
-                    game_world.remove_object2(self, 5)
+                    game_framework.change_state(rankTable)
 
 
             pass

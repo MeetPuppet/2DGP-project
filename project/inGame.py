@@ -34,6 +34,7 @@ from Effect import Beat, readyBurn
 ONE, TWO, THREE, BOSS = range(4)
 
 #playCheck
+realTime = 0
 playTime = 0
 
 #debug
@@ -66,6 +67,8 @@ boom =None
 minion1 = None
 minion2 = None
 boss1 = None
+boss2 = None
+boss3 = None
 
 EBullet = None
 fireball = None
@@ -73,14 +76,20 @@ Cutter = None
 fireWall = None
 spark =None
 
-waves = [[],[],[],[],[],[]]
+BGM = None
+
+waves = [[[],[],[],[],[]],[[],[],[]],[[],[]]]
+REDBOOL = [[[],[],[],[],[]],[[],[],[]],[[],[]]]
 waveCount=0
 
 
 
 def enter():
     global player, stage, bullet1, bullet2, bulletMax, star, boom, coins, powerUp, boomUp, fireWall, spark
-    global minion1, minion2, boss1, EBullet, fireball, Cutter, waves, waveCount
+    global minion1, minion2, boss1,boss2,boss3, EBullet, fireball, Cutter, waves, waveCount, REDBOOL, BGM
+
+    BGM = load_music("sound/Green_Greens.wav")
+    BGM.set_volume(64)
     player = Kirby()
     stage = Stage()
     bullet1 = kirbyBullet1()
@@ -90,14 +99,15 @@ def enter():
     boom = kirbyBoom()
     fireWall = FireWall((0,0))
     spark =SuddenSpark((0,0))
+    playTime = 0
 
     coins = Coin()
     powerUp = PowerUp((1024//2, 768//2))
     boomUp = BoomUp()
-
-    #minion1 = [Scarfy(0),Scarfy(1),Scarfy(2),Scarfy(3)]
     minion2 = SirKibble()
     boss1 = Batafire()
+    boss2 = kracko()
+    boss3 = darkZero()
 
     EBullet = enemyBullet((1024//2, 768//2),player.getPoint())
     fireball = Fireball((1024//2, 768//2),player.getPoint())
@@ -105,20 +115,34 @@ def enter():
 
     game_world.add_object(stage, 0)
     game_world.add_object(player, 1)
+    #minion1 = [Scarfy(0),Scarfy(1),Scarfy(2),Scarfy(3)]
 
-    waves[0] += []
-    waves[1] += [Scarfy(2)for i in range(5)]
-    waves[2] += [Scarfy(3)for i in range(5)]
-    waves[3] += [Scarfy(0,(1074+i*500,384-(i*50))) for i in range(3)]
-    waves[3] += [SirKibble() for i in range(3)]
-    waves[4] += [Scarfy(1,(1074+i*500,384+i*50)) for i in range(3)]
-    waves[4] += [SirKibble() for i in range(3)]
-    waves[5] += [Batafire()]
 
+    waves[0][0] += [Scarfy(2)for i in range(5)]
+    REDBOOL[0][0] += [0 for i in range(5)]
+    waves[0][1] += [Scarfy(3)for i in range(5)]
+    REDBOOL[0][1] += [0 for i in range(5)]
+    waves[0][2] += [Scarfy(0,(1074+i*500,384-(i*50))) for i in range(3)]
+    waves[0][2] += [SirKibble() for i in range(3)]
+    REDBOOL[0][2] += [0 for i in range(6)]
+    waves[0][3] += [Scarfy(1,(1074+i*500,384+i*50)) for i in range(3)]
+    waves[0][3] += [SirKibble() for i in range(3)]
+    REDBOOL[0][3] += [0 for i in range(6)]
+    waves[0][4] += [Batafire()]
+    REDBOOL[0][4] += [0]
+    waves[1][0] += [sunny()for i in range(3)]
+    waves[1][0] += [blueClay()for i in range(5)]
+    REDBOOL[1][0] += [False for i in range(8)]
+    waves[1][1] += [kracko()]
+    REDBOOL[1][1] += [0]
+    waves[2][0] += [darkZero()]
+    REDBOOL[2][0] += [0]
+    BGM.play()
     pass
 
 
 def exit():
+    BGM.stop()
     game_world.clear()
     pass
 
@@ -145,7 +169,6 @@ def handle_events():
             player.handle_event(event)
 
         if event.type == SDL_KEYDOWN and event.key == SDLK_1:
-            game_world.add_object(readyBurn(), 10)
             game_world.add_object(Coin((1024//2, 768//2)), 7)
             game_world.add_object(PowerUp((1024//2, 768//2)), 7)
             game_world.add_object(BoomUp((1024//2, 768//2)), 7)
@@ -170,10 +193,10 @@ def handle_events():
             num = 2
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_4:
-            game_world.add_object(boss1, 5)
+            game_world.add_object(Batafire(), 5)
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_5:
-            game_world.add_object(kracko(), 5)
+            game_world.add_object(boss2, 5)
             pass
         if event.type == SDL_KEYDOWN and event.key == SDLK_6:
             game_world.add_object(darkZero(), 5)
@@ -181,24 +204,56 @@ def handle_events():
 
 
 i=0
-
+j=0
+bossCount=0
+BOOLL = [False,False,False]
 def update():
-    global playTime, waveCount, i, stage
-    #game_world.intersectDistance()
-    #game_world.intersectRectToRect()
+    global playTime, waveCount, i,j, stage, BOOLL
+    global boss1, boss2, boss3, num, realTime, bossCount
     game_world.CommunicateObjects()
 
+    try:
+        if game_world.get_boss_layer()[0].getHP() <= 0 :
+            num = bossCount
+            waveCount = 0
+            i = 0
+    except:
+        num = bossCount
+
     stage.setStage(num)
-    '''
-    if waveCount != 6:
-        playTime+=1
-    if playTime%10 == 0 and i < len(waves[waveCount]) and waveCount < len(waves):
-            game_world.add_object(waves[waveCount][i], 2)
-            i+=1
-    if playTime % 200 == 0 and waveCount < len(waves)-1:
-        waveCount+=1
-        i = 0
-    '''
+
+    playTime += game_framework.frame_time*100
+    try:
+        if int(playTime) % 10 == 0 and i < len(waves[num][waveCount]) and waveCount < len(waves[num]):
+            if num < 2 or waveCount < 1:
+                    if num == 0 and waveCount == 4 and BOOLL[0] == False:
+                        game_world.add_object(waves[num][waveCount][i], 5)
+                        bossCount+=1
+                        BOOLL[0] = True
+                    elif num == 1 and waveCount == 1 and BOOLL[1] == False:
+                        game_world.add_object(waves[num][waveCount][i], 5)
+                        bossCount+=1
+                        BOOLL[1] = True
+                    elif num == 2:
+                        game_world.add_object(waves[num][waveCount][i], 5)
+                        bossCount+=1
+                        BOOLL[2] = True
+                    else:
+                        game_world.add_object(waves[num][waveCount][i], 4)
+                    i += 1
+                    pass
+        elif int(playTime) % 250 == 0 and waveCount < len(waves[num]) - 1:
+            if num == 0 and waveCount == 4:
+                num=1
+            elif num == 1 and waveCount == 1:
+                num=2
+            else:
+                waveCount += 1
+                i = 0
+    except:
+        num = 2
+        pass
+
 
 
     for game_object in game_world.all_objects():

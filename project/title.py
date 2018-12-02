@@ -19,10 +19,12 @@ title_time = 0
 alpha = 1
 
 def enter():
-    global image1,image2,image3, front, anyKey
+    global image1,image2,scene,image3, front, anyKey,title_time
     image0 = Stage()
     game_world.add_object(image0, 0)
-    front = load_image('image/black_screen.png')
+    title_time = 0
+    scene = -1
+    front = load_image('image/title.png')
     image1 = load_image('image/title1.jpg')
     image2 = load_image('image/title2.jpg')
     image3 = load_image('image/title3.jpg')
@@ -39,19 +41,19 @@ def exit():
 
 def update():
     global front, title_time, alpha, button
+    title_time+=game_framework.frame_time
     for game_object in game_world.all_objects():
         game_object.update()
-    delay(0.1)
     if alpha > 0:
         alpha -= game_framework.frame_time
     else:
         alpha = 0
 
     if scene ==-1:
-        if button == True:
-            button = False
-        else:
-            button = True
+        #if  button == True and int(title_time)%2==0:
+         #   button = False
+        #elif button == True and int(title_time)%2==0:
+        button = True
     else:
         button = False
 
@@ -79,6 +81,7 @@ def draw():
     for game_object in game_world.all_objects():
         game_object.render()
     if scene == -1:
+        front.draw(1024//2,384 + 100)
         pass
     elif scene == 0:
         image1.draw(1024//2,768//2)
@@ -88,7 +91,7 @@ def draw():
         image3.draw(1024//2,768//2)
 
     if button == True:
-        anyKey.draw(1024//2, 768-250)
+        anyKey.draw(1024//2, 300)
     else:
         pass
     #front.draw(1024//2,768//2)

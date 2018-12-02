@@ -201,7 +201,10 @@ class DarkStar:
 
 class SuddenSpark:
     image = None
+    sound = None
     def __init__(self, point):
+        if SuddenSpark.sound == None:
+            SuddenSpark.sound = load_wav("sound/kracko/song383.wav")
         self.x, self.y = point[0], point[1]
         self.radius = 30
         self.frame = 0
@@ -228,6 +231,8 @@ class SuddenSpark:
     def getRadius(self): return self.radius
     def removeBullet(self):
             game_world.remove_object2(self,9)
+    def soundPlay(self):
+        self.sound.play()
     pass
     pass
 

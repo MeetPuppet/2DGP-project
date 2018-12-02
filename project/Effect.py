@@ -30,7 +30,12 @@ class Beat:
 
 class Smoke:
     image = None
+    sound = None
     def __init__(self,point,isRight=True):
+        if Smoke.sound == None:
+            Smoke.sound = load_wav("sound/air.wav")
+        self.sound.set_volume(64)
+        self.sound.play()
         self.x, self.y = point[0], point[1]
         self.frameX = 0
         if isRight:
@@ -53,7 +58,12 @@ class Smoke:
 
 class chargeSpark:
     image = None
+    sound = None
     def __init__(self,point):
+        if chargeSpark.sound == None:
+            chargeSpark.sound = load_wav("sound/kracko/song399.wav")
+        self.sound.set_volume(64)
+        self.sound.play()
         self.x, self.y = point[0], point[1]
         self.frame = 0
         self.liveTime = 1
@@ -65,7 +75,9 @@ class chargeSpark:
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)%3
         self.liveTime -= game_framework.frame_time
         if self.liveTime < 0:
-            game_world.add_object(SuddenSpark((self.x,self.y)),9)
+            sudden=SuddenSpark((self.x,self.y))
+            sudden.soundPlay()
+            game_world.add_object(sudden,9)
             game_world.remove_object2(self, 10)
             pass
         pass

@@ -246,7 +246,8 @@ class sunny:
             self.shotTime -= game_framework.frame_time
 
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 5
-        if self.x < -100 or self.isDead:
+
+        if self.x < -100 or self.HP < 0 or self.isDead:
             game_world.remove_object2(self, 4)
         pass
     def render(self):

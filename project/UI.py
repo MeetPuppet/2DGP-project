@@ -124,15 +124,15 @@ class Numbers():
     pass
 
 class ScoreBoard():
-    def __init__(self):
-        self.stratPoint = (1024-24,786-50)
-        self.score = 0
+    def __init__(self,point=(1024-24,786-50),Score = 0):
+        self.stratPoint = point
+        self.score = Score
         self.blocks = []
         self.blocks = [(Numbers(),i) for i in range(9)]
         pass
 
-    def update(self,Score=1):
-        self.score += game_framework.frame_time*10
+    def update(self):
+
         for block in self.blocks:
             num = self.score
             for j in range(block[1]):
@@ -147,8 +147,6 @@ class ScoreBoard():
 
     def getScore(self): return self.score
     def upScore(self,plus=100): self.score += plus
-    def makeRankTable(self):
-        pass
     pass
 
 class bossGause:

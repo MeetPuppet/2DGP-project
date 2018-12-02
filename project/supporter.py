@@ -1,7 +1,7 @@
 from pico2d import *
 import game_world
 import game_framework
-from kirbyBullets import kirbyBullet1
+from kirbyBullets import kirbyBullet1, kirbyBullet2
 
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
@@ -22,7 +22,10 @@ class Shooter:
     def render(self):
         self.image.clip_draw(int(self.frame) * 66, 0 , 66, 36, self.x, self.y)
 
-    def fireBullet(self):
-        bullet = kirbyBullet1((self.x, self.y))
+    def fireBullet(self, kind=0):
+        if kind == 0:
+            bullet = kirbyBullet1((self.x, self.y))
+        else:
+            bullet = kirbyBullet2((self.x, self.y))
         game_world.add_object(bullet,3)
     pass

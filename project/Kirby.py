@@ -23,6 +23,7 @@ def WINSIZEX(): return 1024
 def WINSIZEY(): return 768
 
 life = 2
+gameScore = 0
 # move Speed
 PIXEL_PER_METER = (10.0 / 0.3)
 RUN_SPEED_KMPH = 50.0
@@ -363,6 +364,7 @@ class DeadState:
     @staticmethod
     def enter(Kirby, event):
         Kirby.isEvent = True
+        Kirby.deadSound.play()
         Kirby.guard = 3
         pass
 
@@ -384,9 +386,9 @@ class DeadState:
 
 
 next_state_table = {
-    EventState: {UP_KEY_DOWN: EventState, UP_KEY_UP: EventState, DOWN_KEY_DOWN: EventState, DOWN_KEY_UP: EventState,
-                LEFT_KEY_DOWN: EventState, LEFT_KEY_UP: EventState,RIGHT_KEY_DOWN: EventState, RIGHT_KEY_UP: EventState,
-                Z_KEY_DOWN: EventState,Z_KEY_UP: EventState,X_KEY_DOWN: EventState, BE_IDLE: IdleState},
+    EventState: {UP_KEY_DOWN: MoveState, UP_KEY_UP: IdleState, DOWN_KEY_DOWN: MoveState, DOWN_KEY_UP: IdleState,
+                LEFT_KEY_DOWN: MoveState, LEFT_KEY_UP: IdleState,RIGHT_KEY_DOWN: MoveState, RIGHT_KEY_UP: IdleState,
+                Z_KEY_DOWN: IdleState,Z_KEY_UP: IdleState,X_KEY_DOWN: IdleState, BE_IDLE: IdleState},
 
     IdleState: {UP_KEY_DOWN: MoveState, UP_KEY_UP: IdleState, DOWN_KEY_DOWN: MoveState, DOWN_KEY_UP: IdleState,
                 LEFT_KEY_DOWN: MoveState, LEFT_KEY_UP: IdleState,RIGHT_KEY_DOWN: MoveState, RIGHT_KEY_UP: IdleState,
@@ -412,7 +414,27 @@ next_state_table = {
 
 class Kirby:
     scoreBoard = None
+    bulletSound = None
+    maxSound = None
+    hurtSound = None
+    deadSound = None
+    getItems = None
     def __init__(self):
+        if Kirby.bulletSound == None:
+            Kirby.bulletSound = load_wav('sound/kriby/shot.wav')
+        self.bulletSound.set_volume(64)
+        if Kirby.maxSound == None:
+            Kirby.maxSound = load_wav('sound/kriby/maxShot.wav')
+        self.maxSound.set_volume(64)
+        if Kirby.hurtSound == None:
+            Kirby.hurtSound = load_wav('sound/kriby/hurt.wav')
+        self.hurtSound.set_volume(64)
+        if Kirby.deadSound == None:
+            Kirby.deadSound = load_wav('sound/kriby/0361.wav')
+        self.deadSound.set_volume(64)
+        if Kirby.getItems == None:
+            Kirby.getItems = load_wav('sound/kriby/getItems.wav')
+        self.getItems.set_volume(64)
         self.x, self.y =-10.0,384.0
         self.radius = 20
         self.dirX, self.dirY = 0, 0
@@ -430,7 +452,7 @@ class Kirby:
         self.HP = 5
         self.HPUI = kirbyHPUI(self.HP)
 
-        self.life = life
+        self.life = 2
         self.lifeUI = kirbyLifeUI(self.life)
 
         self.FRAMES_PER_ACTION = 8
@@ -499,19 +521,19 @@ class Kirby:
             i+=1
 
         if self.HP <= 0 and self.life <= 0:
-            score = self.scoreBoard.getScore()
+            score = int(self.scoreBoard.getScore())
             try:
                 with open('data.json', 'r') as f:
                     data_list = json.load(f)
-                for j in range(4):
-                    for i in range(4):
+                for j in range(5):
+                    for i in range(5):
                         if data_list[i]["score"] <= score:
                             data_list[i]["score"], score = score, data_list[i]["score"]
                 f.close()
             except:
                 data_list = [{"rank": 1, "score": 1000000},{"rank": 2, "score": 50000},{"rank": 3, "score": 30000},{"rank": 4, "score": 10000},{"rank": 5, "score": 5000}]
-                for j in range(4):
-                    for i in range(4):
+                for j in range(5):
+                    for i in range(5):
                         if data_list[i]["score"] <= score:
                             data_list[i]["score"], score = score, data_list[i]["score"]
             with open('data.json', 'w') as f:
@@ -536,6 +558,7 @@ class Kirby:
         # fill here
         bullet = kirbyBullet1((self.x, self.y))
         game_world.add_object(bullet,3)
+        self.bulletSound.play()
         for shoot in self.support:
             shoot.fireBullet()
         pass
@@ -544,18 +567,25 @@ class Kirby:
         # fill here
         bullet = kirbyBullet2((self.x, self.y))
         game_world.add_object(bullet,3)
+        self.bulletSound.play()
+        for shoot in self.support:
+            shoot.fireBullet()
         pass
 
     def MaxBullet(self):
         # fill here
         bullet = maxBullet((self.x, self.y))
         game_world.add_object(bullet,3)
+        self.maxSound.play()
+        for shoot in self.support:
+            shoot.fireBullet(1)
         pass
 
     def StarBullet(self):
         # fill here
         bullet = starBullet((self.x, self.y))
         game_world.add_object(bullet,3)
+        self.bulletSound.play()
         for shoot in self.support:
             shoot.fireBullet()
         pass
@@ -571,17 +601,22 @@ class Kirby:
         return [(self.x-23,self.x+23,self.y-10,self.y+10),
                 (self.x - 12, self.x + 12, self.y - 20, self.y + 20)]
 
-    def upScore(self): self.scoreBoard.upScore()
+    def getScore(self): return self.scoreBoard.getScore()
+    def upScore(self):
+        self.scoreBoard.upScore()
 
     def getHP(self): return self.HP
     def heal(self): self.HP += 1
     def Hit(self):
         if self.guard <= 0:
             self.HP -= 1
+            Kirby.hurtSound.play()
             self.guard =3
 
     def getBoom(self): return self.boom
-    def setBoom(self,count=1): self.boom += count
+    def setBoom(self,count=1):
+        Kirby.getItems.play()
+        self.boom += count
 
     def getFrameY(self): return self.frameY
     def setFrameYZero(self): self.frameY=0
@@ -597,6 +632,7 @@ class Kirby:
     def offGrog(self): self.grog = False
 
     def summonShooter(self):
+        Kirby.getItems.play()
         if self.supCount < 2:
             self.support += [Shooter((self.x,self.y))]
             self.supCount+=1

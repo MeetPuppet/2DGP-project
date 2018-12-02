@@ -24,6 +24,9 @@ class kirbyBullet1:
         self.frame=0
         if kirbyBullet1.image == None:
             kirbyBullet1.image = load_image('image/kirby/kirbyBullet.png')
+
+
+
         pass
     def update(self):
         self.x += RUN_SPEED_PPS * game_framework.frame_time
