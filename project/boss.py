@@ -39,7 +39,7 @@ class Batafire:
         self.radius = 90
         self.frame = 0
         self.state = 0
-        self.guarding = 1
+        self.guarding = 0.1
         self.wait = 10
         self.backMove = False
         self.UpMove = False
@@ -59,6 +59,8 @@ class Batafire:
 
         pass
     def update(self):
+        if self.guarding > 0:
+            self.guarding-=game_framework.frame_time
         if self.gause == None:
             self.gause = bossGause(self.maxHP)
         else:
@@ -196,12 +198,14 @@ class Batafire:
     def getState(self): return self.state
     def getHP(self): return self.HP
     def getHurt(self, damage):
-        self.HP-= damage
-        kirby= game_world.get_player_layer()[0]
-        target = kirby.getPoint()
-        explo = random.randint(0,10)
-        if explo == 0:
-            game_world.add_object(Fireball((self.x - 100, self.y - 100), target), 8)
+        if self.guarding < 0:
+            self.guarding = 0.1
+            self.HP-= damage
+            kirby= game_world.get_player_layer()[0]
+            target = kirby.getPoint()
+            explo = random.randint(0,10)
+            if explo == 0:
+                game_world.add_object(Fireball((self.x - 100, self.y - 100), target), 8)
 
 
     def isDead(self):
@@ -311,6 +315,8 @@ class kracko:
         pass
 
     def update(self):
+        if self.guarding > 0:
+            self.guarding-=game_framework.frame_time
         if self.gause == None:
             self.gause = bossGause(self.maxHP)
         else:
@@ -403,8 +409,10 @@ class kracko:
         HP = self.HP
         return HP
     def getHurt(self, damage) :
-        self.HP-= damage
-        game_world.add_object(Smoke((self.x+random.randint(-188,188), self.y+random.randint(-128,128))), 10)
+        if self.guarding < 0:
+            self.guarding = 0.1
+            self.HP-= damage
+            game_world.add_object(Smoke((self.x+random.randint(-188,188), self.y+random.randint(-128,128))), 10)
 
     def isDead(self):
         if self.HP > 0:
@@ -427,6 +435,7 @@ class darkZero:
         self.radius = 300
         self.frame = 0
         self.eyeFrame = 0
+        self.guarding = 1
         self.intro = True
         self.wait = 3
         self.count = 1
@@ -438,6 +447,8 @@ class darkZero:
 
         pass
     def update(self):
+        if self.guarding > 0 and self.intro == False:
+            self.guarding-=game_framework.frame_time
         if self.gause == None:
             self.gause = bossGause(self.maxHP)
         else:
@@ -536,7 +547,9 @@ class darkZero:
 
     def getHP(self): return self.HP
     def getHurt(self, damage):
-        self.HP-= damage
+        if self.guarding < 0:
+            self.guarding = 0.1
+            self.HP-= damage
 
 
     def isDead(self):
