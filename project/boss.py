@@ -112,7 +112,7 @@ class Batafire:
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
             if self.count / 0.1 > 1:
                 Batafire.fireSound.play()
-                game_world.add_object(Fireball((self.x-100,self.y-100),(self.x-200,self.y-100+random.randint(-100,100))), 8)
+                game_world.add_object(Fireball((self.x-100,self.y-100),(self.x-200,self.y-100+random.randint(-100,100))), 4)
                 self.count = 0
 
             if self.wait < 0:
@@ -517,8 +517,8 @@ class darkZero:
         self.gause.render()
         self.bodyImage.clip_draw(int(self.frame) * 585, 0 , 585, 702, self.x, self.y)
         self.eyeImage.clip_draw(int(self.eyeFrame) * 225, 0 , 225, 225, self.x-30, self.y-80)
-        draw_rectangle(*(self.getRect()[0][0],self.getRect()[0][2],self.getRect()[0][1],self.getRect()[0][3]))
-        draw_rectangle(*(self.getRect()[1][0],self.getRect()[1][2],self.getRect()[1][1],self.getRect()[1][3]))
+        #draw_rectangle(*(self.getRect()[0][0],self.getRect()[0][2],self.getRect()[0][1],self.getRect()[0][3]))
+        #draw_rectangle(*(self.getRect()[1][0],self.getRect()[1][2],self.getRect()[1][1],self.getRect()[1][3]))
 
 
         pass
