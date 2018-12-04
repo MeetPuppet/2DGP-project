@@ -212,49 +212,26 @@ def update():
     global boss1, boss2, boss3, num, realTime, bossCount
     game_world.CommunicateObjects()
 
-    try:
-        if game_world.get_boss_layer()[0].getHP() <= 0 :
-            num = bossCount
-            waveCount = 0
-            i = 0
-    except:
-        num = bossCount
 
     stage.setStage(num)
 
     playTime += game_framework.frame_time*100
-    try:
-        if int(playTime) % 10 == 0 and i < len(waves[num][waveCount]) and waveCount < len(waves[num]):
-            if num < 2 or waveCount < 1:
-                    if num == 0 and waveCount == 4 and BOOLL[0] == False:
-                        game_world.add_object(waves[num][waveCount][i], 5)
-                        bossCount+=1
-                        BOOLL[0] = True
-                    elif num == 1 and waveCount == 1 and BOOLL[1] == False:
-                        game_world.add_object(waves[num][waveCount][i], 5)
-                        bossCount+=1
-                        BOOLL[1] = True
-                    elif num == 2:
-                        game_world.add_object(waves[num][waveCount][i], 5)
-                        bossCount+=1
-                        BOOLL[2] = True
-                    else:
-                        game_world.add_object(waves[num][waveCount][i], 4)
-                    i += 1
-                    pass
-        elif int(playTime) % 250 == 0 and waveCount < len(waves[num]) - 1:
-            if num == 0 and waveCount == 4:
-                num=1
-            elif num == 1 and waveCount == 1:
-                num=2
-            else:
-                waveCount += 1
-                i = 0
-    except:
-        num = 2
-        pass
-
-
+    if int(playTime) % 10 == 0 and i < len(waves[num][waveCount]) and waveCount < len(waves[num]):
+        if num == 0 and waveCount == 4 and BOOLL[0] == False:
+            game_world.add_object(waves[num][waveCount][i], 5)
+            BOOLL[0] = True
+        elif num == 1 and waveCount == 1 and BOOLL[1] == False:
+            game_world.add_object(waves[num][waveCount][i], 5)
+            BOOLL[1] = True
+        elif num == 2 and waveCount == 0 and BOOLL[2] == False:
+            game_world.add_object(waves[num][waveCount][i], 5)
+            BOOLL[2] = True
+        elif (num == 0 and waveCount < 4) or (num == 1 and waveCount < 1) :
+            game_world.add_object(waves[num][waveCount][i], 4)
+            i += 1
+    elif int(playTime) % 250 == 0 and waveCount < len(waves[num]) - 1:
+        waveCount += 1
+        i = 0
 
     for game_object in game_world.all_objects():
         game_object.update()
@@ -266,3 +243,8 @@ def draw():
         game_object.render()
     update_canvas()
 
+def setStageNum(n):
+    global num, waveCount, i
+    num = n
+    waveCount=0
+    i = 0

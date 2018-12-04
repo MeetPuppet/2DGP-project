@@ -386,9 +386,9 @@ class DeadState:
 
 
 next_state_table = {
-    EventState: {UP_KEY_DOWN: MoveState, UP_KEY_UP: IdleState, DOWN_KEY_DOWN: MoveState, DOWN_KEY_UP: IdleState,
-                LEFT_KEY_DOWN: MoveState, LEFT_KEY_UP: IdleState,RIGHT_KEY_DOWN: MoveState, RIGHT_KEY_UP: IdleState,
-                Z_KEY_DOWN: IdleState,Z_KEY_UP: IdleState,X_KEY_DOWN: IdleState, BE_IDLE: IdleState},
+    EventState: {UP_KEY_DOWN: EventState, UP_KEY_UP: EventState, DOWN_KEY_DOWN: EventState, DOWN_KEY_UP: EventState,
+                LEFT_KEY_DOWN: EventState, LEFT_KEY_UP: EventState,RIGHT_KEY_DOWN: EventState, RIGHT_KEY_UP: EventState,
+                Z_KEY_DOWN: EventState,Z_KEY_UP: EventState,X_KEY_DOWN: EventState, BE_IDLE: IdleState},
 
     IdleState: {UP_KEY_DOWN: MoveState, UP_KEY_UP: IdleState, DOWN_KEY_DOWN: MoveState, DOWN_KEY_UP: IdleState,
                 LEFT_KEY_DOWN: MoveState, LEFT_KEY_UP: IdleState,RIGHT_KEY_DOWN: MoveState, RIGHT_KEY_UP: IdleState,
@@ -401,7 +401,7 @@ next_state_table = {
     ReadyState: {UP_KEY_DOWN: ReadyState, UP_KEY_UP: ReadyState, DOWN_KEY_DOWN: ReadyState, DOWN_KEY_UP: ReadyState,
                 LEFT_KEY_DOWN: ReadyState, LEFT_KEY_UP: ReadyState,RIGHT_KEY_DOWN: ReadyState, RIGHT_KEY_UP: ReadyState,
                 Z_KEY_DOWN: ReadyState, Z_KEY_UP: ReadyState, X_KEY_DOWN: ReadyState, BE_IDLE: IdleState, SHOT: ShotState
-                , DEAD: EventState},
+                , DEAD: DeadState},
 
     ShotState: {UP_KEY_DOWN: ShotState, UP_KEY_UP: ShotState, DOWN_KEY_DOWN: ShotState, DOWN_KEY_UP: ShotState,
                     LEFT_KEY_DOWN: ShotState, LEFT_KEY_UP: ShotState,RIGHT_KEY_DOWN: ShotState, RIGHT_KEY_UP: ShotState,

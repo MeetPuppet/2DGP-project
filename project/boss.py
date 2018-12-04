@@ -10,7 +10,7 @@ from UI import bossGause
 from enemyBullets import Fireball, enemyBullet, getAngle, DarkStar
 from minions import miniBata
 from Effect import Beat,Smoke, chargeSpark, readyBurn
-
+import inGame
 
 # fill expressions correctly
 PIXEL_PER_METER = (10.0 / 0.3)
@@ -141,6 +141,7 @@ class Batafire:
                 get_time()
 
             if self.y < -150:
+                inGame.setStageNum(1)
                 game_world.remove_object2(self,5)
 
             pass
@@ -367,6 +368,7 @@ class kracko:
             self.EYEimage.opacify(self.maxHP/100)
             self.getHurt(1)
             if self.maxHP<0:
+                    inGame.setStageNum(2)
                     game_world.remove_object2(self,5)
 
     def render(self):
@@ -470,6 +472,7 @@ class darkZero:
                 game_world.add_object(Beat((self.x+random.randint(-350,350), self.y+random.randint(-350,350))), 10)
                 game_world.add_object(Smoke((self.x+random.randint(-350,350), self.y+random.randint(-350,350))), 10)
                 if self.maxHP<=0:
+
                     game_world.remove_object2(self,5)
                     score = int(game_world.get_player_layer()[0].getScore())
                     try:
