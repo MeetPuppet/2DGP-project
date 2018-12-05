@@ -211,6 +211,7 @@ class SuddenSpark:
         self.liveTime = 0.5
         if SuddenSpark.image == None:
             SuddenSpark.image = load_image("image/boss/kracko/spark.png")
+        self.soundPlay()
         pass
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3

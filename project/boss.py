@@ -97,7 +97,7 @@ class Batafire:
         elif self.state == 1:
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
             if int(self.frame) == 3:
-                for i in range(3): game_world.add_object(miniBata((1300,random.randint(100,668))),2)
+                for i in range(3): game_world.add_object(miniBata((1300,random.randint(100,668))),4)
                 if target[0] < 200:
                     self.state = 2
                     self.wait = 3
@@ -112,7 +112,7 @@ class Batafire:
             self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
             if self.count / 0.1 > 1:
                 Batafire.fireSound.play()
-                game_world.add_object(Fireball((self.x-100,self.y-100),(self.x-200,self.y-100+random.randint(-100,100))), 4)
+                game_world.add_object(Fireball((self.x-100,self.y-100),(self.x-200,self.y-100+random.randint(-100,100))), 8)
                 self.count = 0
 
             if self.wait < 0:
@@ -369,11 +369,11 @@ class kracko:
                 self.wayRight = False
                 self.makeSpark()
         else:
-            self.maxHP-=0.8
-            self.image.opacify(self.maxHP/100)
-            self.EYEimage.opacify(self.maxHP/100)
+            self.maxHP = int(self.maxHP - game_framework.frame_time*20)
+            self.image.opacify(self.maxHP/50)
+            self.EYEimage.opacify(self.maxHP/50)
             self.getHurt(1)
-            if self.maxHP<0:
+            if self.maxHP<=0:
                     inGame.setStageNum(2)
                     game_world.remove_object2(self,5)
 
@@ -477,9 +477,9 @@ class darkZero:
                     else:
                         self.makeFireWall()
             else:
-                self.maxHP-=1
-                self.bodyImage.opacify(self.maxHP/200)
-                self.eyeImage.opacify(self.maxHP/200)
+                self.maxHP = int(self.maxHP - game_framework.frame_time*20)
+                self.bodyImage.opacify(self.maxHP/100)
+                self.eyeImage.opacify(self.maxHP/100)
                 game_world.add_object(Beat((self.x+random.randint(-350,350), self.y+random.randint(-350,350))), 10)
                 game_world.add_object(Smoke((self.x+random.randint(-350,350), self.y+random.randint(-350,350))), 10)
                 if self.maxHP<=0:

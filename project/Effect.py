@@ -76,7 +76,6 @@ class chargeSpark:
         self.liveTime -= game_framework.frame_time
         if self.liveTime < 0:
             sudden=SuddenSpark((self.x,self.y))
-            sudden.soundPlay()
             game_world.add_object(sudden,9)
             game_world.remove_object2(self, 10)
             pass
